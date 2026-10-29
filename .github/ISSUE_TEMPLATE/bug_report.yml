@@ -1,0 +1,33 @@
+name: Bug report / 问题反馈
+description: Report a reproducible MCP or Creator problem / 提交可复现的问题
+body:
+  - type: markdown
+    attributes:
+      value: '请勿上传连接令牌、完整游戏工程、账号信息或未经脱敏的日志。安全漏洞请参见 SECURITY.md。'
+  - type: input
+    id: version
+    attributes:
+      label: MCP version / 版本
+      placeholder: 0.8.0
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: Environment / 环境
+      description: OS, Creator version, Node version and client name/version
+      placeholder: Windows 11, Creator 3.8.8, Node 22.x, Codex Desktop
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps and expected/actual result / 步骤与预期、实际结果
+      description: Include operation name and sanitized parameters. Use a small disposable project where possible.
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Sanitized evidence / 脱敏证据
+      description: Error, request ID, doctor output or screenshot. Remove local usernames, paths and tokens.

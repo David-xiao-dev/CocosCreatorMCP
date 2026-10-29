@@ -1,0 +1,86 @@
+[
+  {
+    "id": "ui-layout",
+    "title": "UI 层级与布局",
+    "tags": [
+      "UI",
+      "布局",
+      "Canvas",
+      "Label",
+      "Button",
+      "模板"
+    ],
+    "body": "ui.build 只在真实项目 Canvas 下构建 UI，排除编辑器隐藏辅助 Canvas；没有项目 Canvas 时默认创建 Canvas 和 UI 相机，createCanvas=false 可禁止。多 Canvas 需要指定 parent。默认提供 UITransform 和 UI_2D layer。先 dryRun，再生成、读取项目层级与截图，保存重开验证。模板不含业务脚本绑定；动态适配需要按设计设置 Widget/Layout 并在目标分辨率验收。"
+  },
+  {
+    "id": "undo",
+    "title": "撤销与批量失败恢复",
+    "tags": [
+      "undo",
+      "撤销",
+      "batch",
+      "批量",
+      "失败",
+      "回滚"
+    ],
+    "body": "原生节点/属性操作使用编辑器记录。批量不是事务，失败后已完成步骤仍生效；返回 failed/skipped。检查场景后只执行剩余修复。超时先查询 requestId，禁止盲目重放写操作。ui.build 失败时尝试删除其新建根节点，并明确报告清理是否成功。"
+  },
+  {
+    "id": "prefab",
+    "title": "预制体引用检查流程",
+    "tags": [
+      "prefab",
+      "预制体",
+      "引用",
+      "脚本"
+    ],
+    "body": "使用 prefab.inspect 检查实例、依赖和外部双向引用；prefab.create 先 dryRun，原生创建会替换源子树 UUID，后续使用返回 node 并重新解析子节点。prefab.instantiate 验证真实链接。apply/save/restore 需要最新 SHA256 revision 并先生成项目 local 备份。open 返回内容 root 和 returnAsset；编辑后 save，再 close。恢复用 backupId，不删除 .meta。已验收自定义脚本、Node/Component/数组、SpriteFrame、Button 事件和嵌套引用；不等于所有 prefab 变体、运行表现或全项目引用已验证。"
+  },
+  {
+    "id": "animation",
+    "title": "动画与 Spine 的验收要求",
+    "tags": [
+      "animation",
+      "动画",
+      "Spine",
+      "关键帧"
+    ],
+    "body": "当前没有专用动画/Spine 工具。后续模块需验证资源导入、轨道与关键帧、曲线、事件、预览、保存重开；Spine 还需核对骨骼数据版本和贴图引用。通用脚本入口不等于工作流已完成。"
+  },
+  {
+    "id": "assets",
+    "title": "资源写入与导入",
+    "tags": [
+      "asset",
+      "资源",
+      "导入",
+      "UUID",
+      "脚本"
+    ],
+    "body": "文本和 TypeScript 使用 asset.write 经 AssetDB 创建/保存，保留 meta 导入行为。脚本写入后检查编译日志与组件注册，再挂载并读取引用。不要直接修改 .meta；移动资源通过编辑器数据库接口。"
+  },
+  {
+    "id": "debug",
+    "title": "日志与视觉验证",
+    "tags": [
+      "debug",
+      "日志",
+      "截图",
+      "验证",
+      "error"
+    ],
+    "body": "使用 editor.logs 过滤错误，events 增量读取操作/编译事件。先查询原生状态，布局任务按需截图。截图是观察证据，不等于业务逻辑正确。scene.validate 只检查明确声明的结构规则。"
+  },
+  {
+    "id": "build",
+    "title": "预览与构建验收",
+    "tags": [
+      "preview",
+      "预览",
+      "build",
+      "构建",
+      "发布"
+    ],
+    "body": "当前自动构建闭环仍待实现。成功打开 builder 面板不等于构建完成。验收应检查任务终态、输出目录和产物，并运行目标平台；预览还需检查实际交互和运行错误。"
+  }
+]

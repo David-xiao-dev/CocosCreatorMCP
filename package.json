@@ -1,0 +1,58 @@
+{
+  "name": "cocos-creator-mcp",
+  "version": "0.8.0",
+  "private": true,
+  "type": "module",
+  "description": "Source-available Cocos Creator editor control with compact MCP tools and native workflows",
+  "license": "SEE LICENSE IN LICENSE",
+  "bin": {
+    "cocos-mcp": "scripts/cli.mjs"
+  },
+  "files": [
+    "src/",
+    "extension/",
+    "scripts/",
+    "docs/",
+    "examples/",
+    "README.md",
+    "CHANGELOG.md",
+    "CONTRIBUTING.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "start": "node src/server.mjs",
+    "install:extension": "node scripts/install.mjs",
+    "test": "node --test tests/*.test.mjs",
+    "test:live": "node scripts/live-check.mjs",
+    "test:live:v2": "node scripts/live-v2-check.mjs",
+    "test:live:ui": "node scripts/live-ui-check.mjs",
+    "demo:interactive": "node scripts/create-interactive-demo.mjs",
+    "test:live:runtime": "node scripts/live-runtime-check.mjs",
+    "test:live:development": "node scripts/live-development-check.mjs",
+    "release:local": "node scripts/release.mjs",
+    "release:check-version": "node scripts/check-version.mjs",
+    "generate": "node scripts/generate-catalog.mjs",
+    "benchmark": "node scripts/benchmark.mjs",
+    "doctor": "node scripts/doctor.mjs",
+    "test:live:prefab": "node scripts/live-prefab-check.mjs",
+    "demo:workflow": "node scripts/create-workflow-demo.mjs",
+    "test:live:resources": "node scripts/live-resource-check.mjs",
+    "test:live:animation": "node scripts/live-animation-check.mjs",
+    "test:live:workflow": "node scripts/live-workflow-check.mjs",
+    "benchmark:workflow": "node scripts/benchmark-workflow.mjs",
+    "release:verify": "node scripts/verify-release.mjs",
+    "demo:typography": "node scripts/create-typography-demo.mjs",
+    "test:live:typography": "node scripts/live-typography-check.mjs",
+    "test:live:typography:panel": "node scripts/live-typography-panel-check.mjs",
+    "test:live:scene-view": "node scripts/live-scene-view-check.mjs",
+    "test:live:ui-layout": "node scripts/live-ui-layout-check.mjs",
+    "test:live:ui-layout:panel": "node scripts/live-ui-layout-panel-check.mjs"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "1.32.2",
+    "zod": "4.6.7"
+  }
+}

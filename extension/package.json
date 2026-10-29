@@ -1,0 +1,133 @@
+{
+  "name": "cocos-codex-bridge",
+  "version": "0.8.0",
+  "package_version": 2,
+  "type": "commonjs",
+  "title": "Cocos MCP",
+  "description": "Local editor bridge for Codex and other MCP clients, targeting Creator 3.8.8",
+  "author": "CocosCreatorMCP maintainer <17268680050@163.com>",
+  "license": "SEE LICENSE IN LICENSE",
+  "editor": ">=3.8.8 <3.9.0",
+  "main": "./main.js",
+  "panels": {
+    "default": {
+      "title": "Cocos MCP · 控制台",
+      "main": "./panel.js",
+      "size": {
+        "min-width": 680,
+        "min-height": 520,
+        "width": 960,
+        "height": 740
+      }
+    }
+  },
+  "contributions": {
+    "scene": {
+      "script": "./scene.js"
+    },
+    "menu": [
+      {
+        "path": "i18n:menu.extension",
+        "label": "Cocos MCP/控制台",
+        "message": "open-panel"
+      },
+      {
+        "path": "i18n:menu.extension",
+        "label": "Cocos MCP/Connection status",
+        "message": "show-status"
+      }
+    ],
+    "messages": {
+      "workflow-action": {
+        "methods": [
+          "workflowAction"
+        ]
+      },
+      "open-panel": {
+        "methods": [
+          "openPanel"
+        ]
+      },
+      "open-preview": {
+        "methods": [
+          "openPreview"
+        ]
+      },
+      "dashboard": {
+        "methods": [
+          "dashboard"
+        ]
+      },
+      "set-settings": {
+        "methods": [
+          "setSettings"
+        ]
+      },
+      "operation-schema": {
+        "methods": [
+          "operationSchema"
+        ]
+      },
+      "template-plan": {
+        "methods": [
+          "templatePlan"
+        ]
+      },
+      "run-template": {
+        "methods": [
+          "runTemplate"
+        ]
+      },
+      "prefab-action": {
+        "methods": [
+          "prefabAction"
+        ]
+      },
+      "locate-ui": {
+        "methods": [
+          "locateUI"
+        ]
+      },
+      "show-status": {
+        "methods": [
+          "showStatus"
+        ]
+      },
+      "scene:ready": {
+        "methods": [
+          "onSceneReady"
+        ]
+      },
+      "scene:save": {
+        "methods": [
+          "onSceneSave"
+        ]
+      },
+      "programming:compiled": {
+        "methods": [
+          "onCompiled"
+        ]
+      },
+      "builder:task-changed": {
+        "methods": [
+          "onBuildChanged"
+        ]
+      },
+      "asset-db:asset-add": {
+        "methods": [
+          "onAssetChanged"
+        ]
+      },
+      "asset-db:asset-change": {
+        "methods": [
+          "onAssetChanged"
+        ]
+      },
+      "asset-db:asset-delete": {
+        "methods": [
+          "onAssetChanged"
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,103 @@
+CocosCreatorMCP Personal Non-Commercial License 1.0
+
+Copyright (c) 2026 the CocosCreatorMCP maintainer,
+identified by 17268680050@163.com (the "Licensor").
+All rights reserved except as expressly granted below.
+
+Commercial licensing and other permissions: 17268680050@163.com
+
+1. Scope
+
+"Software" means the original CocosCreatorMCP source code, editor extension,
+scripts, documentation and original example materials provided with this
+license, including modifications to those materials. This license applies
+only to rights owned or controlled by the Licensor. Separately licensed
+third-party materials are excluded and remain under their own licenses.
+
+2. Free personal non-commercial permission
+
+Subject to these terms, an individual may view, download, install, run,
+make personal backup copies of and privately modify the Software solely
+for that individual's personal learning, research or non-commercial hobby
+projects. These permissions are non-exclusive, non-transferable and
+non-sublicensable. Copyright, license and attribution notices must remain
+intact in permitted copies and modifications.
+
+"Personal non-commercial" excludes work for or on behalf of a company,
+organization, employer or client, whether paid or unpaid. It also excludes
+use directed toward commercial advantage, revenue or compensation,
+including development, testing or maintenance of commercial games,
+applications or services. Advertising, in-app purchases, paid access,
+subscriptions, sponsored work, paid contract work and paid training or
+hosting using the Software are examples of commercial use. Making a
+product free to download does not make its development non-commercial.
+
+3. Prior written authorization required
+
+Any commercial use, use for an organization, employer or client, or other
+use outside section 2 requires prior written permission from the Licensor.
+There is no automatic trial, evaluation or internal-business exception.
+Authorization scope, term, fees and any distribution rights must be agreed
+separately in writing. Silence does not constitute permission.
+
+Except as provided in section 4 or required by applicable law, you may not
+publish, redistribute, sublicense, sell, rent, relicense, white-label or
+otherwise provide the Software, modified versions or substantial portions
+of it to others without prior written permission, even free of charge or
+for non-commercial purposes. This includes mirrors, download bundles,
+package registries, resold extensions and hosted access. You may not remove
+notices or represent the Software as your own independently authored product.
+
+4. Public repository and platform rights
+
+Where the Licensor makes the Software available on GitHub or another code
+hosting platform, users and the platform retain the limited viewing and
+forking rights required by that platform's applicable terms of service.
+This exception does not expand the right to use the Software commercially,
+redistribute it outside those platform rights, or relicense it. All other
+rights remain reserved. Rights that cannot lawfully be excluded are not
+restricted by this license.
+
+5. Your projects and output
+
+This license does not claim ownership of your game, assets, independently
+authored code or other output merely because you used the Software. Output
+that does not contain the Software or substantial portions of it is not
+subject to this license's redistribution restriction. However, using the
+Software to develop, test or maintain a commercial project still requires
+prior written commercial authorization. Copied or modified Software remains
+subject to this license. Third-party materials retain their own terms.
+
+6. Other rights and prior grants
+
+No trademark right, endorsement, support commitment or right to grant
+permissions on behalf of the Licensor is provided. Contributions require
+a separate written contribution agreement as described in CONTRIBUTING.md;
+submitting a suggestion or patch does not transfer its copyright.
+
+This license governs the copies supplied under it. It does not revoke any
+valid license previously granted for a separately supplied copy, nor does
+it relicense third-party materials. Historical changelog references do not
+grant a different license for this distribution.
+
+7. Termination
+
+The permissions under this license terminate automatically if you violate
+its terms. You must then stop using the Software and delete copies under
+your control, except copies legally required to be retained. Reinstatement
+requires the Licensor's written permission. This does not limit remedies
+available under applicable law or affect rights in your independent output.
+
+8. Disclaimer and limitation of liability
+
+TO THE MAXIMUM EXTENT PERMITTED BY APPLICABLE LAW, THE SOFTWARE IS PROVIDED
+"AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT
+NOT LIMITED TO MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+NONINFRINGEMENT. IN NO EVENT SHALL THE LICENSOR OR CONTRIBUTORS BE LIABLE
+FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
+OR ITS USE. MANDATORY STATUTORY RIGHTS AND LIABILITIES ARE NOT EXCLUDED.
+
+This is a source-available license with use and redistribution restrictions,
+not an OSI-approved open-source license. The English text in this LICENSE
+is authoritative; docs/LICENSING.md provides a Chinese explanation.

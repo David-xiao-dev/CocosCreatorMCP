@@ -1,0 +1,515 @@
+{
+  "date": "2026-10-28",
+  "commit": "a5db895b3299dccd78979ca0268193e4b6ebf037",
+  "method": "Static getTools declarations, comments removed; names at tool object indentation. No third-party code executed. Action enum is a declared interface, not workflow validation.",
+  "toolCount": 50,
+  "modules": [
+    {
+      "file": "asset-advanced-tools.ts",
+      "tools": [
+        {
+          "name": "asset_manage",
+          "line": 9,
+          "actions": [
+            "import",
+            "delete",
+            "save_meta",
+            "generate_url"
+          ]
+        },
+        {
+          "name": "asset_analyze",
+          "line": 62,
+          "actions": [
+            "dependencies",
+            "manifest"
+          ]
+        },
+        {
+          "name": "asset_system",
+          "line": 129,
+          "actions": [
+            "check_ready",
+            "open_external",
+            "refresh"
+          ]
+        },
+        {
+          "name": "asset_query",
+          "line": 152,
+          "actions": [
+            "get_info",
+            "get_assets",
+            "find_by_name",
+            "get_details",
+            "query_path",
+            "query_uuid",
+            "query_url"
+          ]
+        },
+        {
+          "name": "asset_operations",
+          "line": 220,
+          "actions": [
+            "create",
+            "copy",
+            "move",
+            "delete",
+            "save",
+            "reimport",
+            "import"
+          ]
+        }
+      ]
+    },
+    {
+      "file": "broadcast-tools.ts",
+      "tools": [
+        {
+          "name": "broadcast_log_management",
+          "line": 15,
+          "actions": [
+            "get_log",
+            "clear_log"
+          ]
+        },
+        {
+          "name": "broadcast_listener_management",
+          "line": 44,
+          "actions": [
+            "start_listening",
+            "stop_listening",
+            "get_active_listeners"
+          ]
+        }
+      ]
+    },
+    {
+      "file": "component-tools.ts",
+      "tools": [
+        {
+          "name": "component_manage",
+          "line": 7,
+          "actions": [
+            "add",
+            "remove"
+          ]
+        },
+        {
+          "name": "component_query",
+          "line": 31,
+          "actions": [
+            "list",
+            "info",
+            "available_types"
+          ]
+        },
+        {
+          "name": "set_component_property",
+          "line": 60,
+          "actions": null
+        },
+        {
+          "name": "configure_click_event",
+          "line": 132,
+          "actions": null
+        }
+      ]
+    },
+    {
+      "file": "debug-tools.ts",
+      "tools": [
+        {
+          "name": "debug_console",
+          "line": 33,
+          "actions": [
+            "get_logs",
+            "clear"
+          ]
+        },
+        {
+          "name": "debug_logs",
+          "line": 61,
+          "actions": [
+            "read",
+            "search",
+            "info"
+          ]
+        },
+        {
+          "name": "debug_system",
+          "line": 113,
+          "actions": [
+            "editor_info",
+            "performance"
+          ]
+        }
+      ]
+    },
+    {
+      "file": "node-tools.ts",
+      "tools": [
+        {
+          "name": "node_query",
+          "line": 13,
+          "actions": [
+            "info",
+            "find",
+            "find_by_name",
+            "list_all",
+            "detect_type",
+            "tree"
+          ]
+        },
+        {
+          "name": "node_lifecycle",
+          "line": 54,
+          "actions": [
+            "create",
+            "delete"
+          ]
+        },
+        {
+          "name": "node_transform",
+          "line": 139,
+          "actions": null
+        },
+        {
+          "name": "node_hierarchy",
+          "line": 202,
+          "actions": [
+            "move",
+            "duplicate"
+          ]
+        },
+        {
+          "name": "node_clipboard",
+          "line": 243,
+          "actions": [
+            "copy",
+            "paste",
+            "cut"
+          ]
+        },
+        {
+          "name": "node_property_management",
+          "line": 276,
+          "actions": [
+            "reset_property",
+            "reset_transform",
+            "reset_component"
+          ]
+        },
+        {
+          "name": "node_array_management",
+          "line": 303,
+          "actions": [
+            "move_element",
+            "remove_element"
+          ]
+        },
+        {
+          "name": "node_script_management",
+          "line": 341,
+          "actions": [
+            "attach",
+            "remove"
+          ]
+        }
+      ]
+    },
+    {
+      "file": "prefab-tools.ts",
+      "tools": [
+        {
+          "name": "prefab_browse",
+          "line": 9,
+          "actions": [
+            "list",
+            "info",
+            "validate"
+          ]
+        },
+        {
+          "name": "prefab_lifecycle",
+          "line": 35,
+          "actions": [
+            "create",
+            "delete"
+          ]
+        },
+        {
+          "name": "prefab_instance",
+          "line": 68,
+          "actions": [
+            "instantiate",
+            "unlink",
+            "apply",
+            "revert"
+          ]
+        },
+        {
+          "name": "prefab_edit",
+          "line": 102,
+          "actions": [
+            "enter",
+            "save",
+            "exit",
+            "test"
+          ]
+        }
+      ]
+    },
+    {
+      "file": "preferences-tools.ts",
+      "tools": [
+        {
+          "name": "preferences_manage",
+          "line": 7,
+          "actions": [
+            "open_panel",
+            "get_config",
+            "set_config",
+            "reset_config"
+          ]
+        },
+        {
+          "name": "preferences_query",
+          "line": 48,
+          "actions": [
+            "get_all",
+            "list_categories",
+            "search_settings"
+          ]
+        },
+        {
+          "name": "preferences_backup",
+          "line": 88,
+          "actions": [
+            "export",
+            "validate_backup"
+          ]
+        }
+      ]
+    },
+    {
+      "file": "project-tools.ts",
+      "tools": [
+        {
+          "name": "project_manage",
+          "line": 7,
+          "actions": [
+            "run",
+            "build",
+            "get_info",
+            "get_settings"
+          ]
+        },
+        {
+          "name": "project_build_system",
+          "line": 47,
+          "actions": [
+            "get_build_settings",
+            "open_build_panel",
+            "check_builder_status"
+          ]
+        }
+      ]
+    },
+    {
+      "file": "reference-image-tools.ts",
+      "tools": [
+        {
+          "name": "reference_image_management",
+          "line": 8,
+          "actions": [
+            "add",
+            "remove",
+            "switch",
+            "clear_all"
+          ]
+        },
+        {
+          "name": "reference_image_query",
+          "line": 46,
+          "actions": [
+            "get_config",
+            "get_current",
+            "list_all"
+          ]
+        },
+        {
+          "name": "reference_image_transform",
+          "line": 63,
+          "actions": [
+            "set_position",
+            "set_scale",
+            "set_opacity",
+            "set_data"
+          ]
+        },
+        {
+          "name": "reference_image_display",
+          "line": 118,
+          "actions": [
+            "refresh"
+          ]
+        }
+      ]
+    },
+    {
+      "file": "scene-tools.ts",
+      "tools": [
+        {
+          "name": "scene_management",
+          "line": 8,
+          "actions": [
+            "get_current",
+            "get_list",
+            "open",
+            "save",
+            "create",
+            "save_as",
+            "close"
+          ]
+        },
+        {
+          "name": "scene_hierarchy",
+          "line": 44,
+          "actions": null
+        },
+        {
+          "name": "scene_execution_control",
+          "line": 60,
+          "actions": [
+            "execute_component_method",
+            "execute_scene_script",
+            "restore_prefab"
+          ]
+        },
+        {
+          "name": "scene_state_management",
+          "line": 104,
+          "actions": [
+            "create_snapshot",
+            "abort_snapshot",
+            "begin_undo",
+            "end_undo",
+            "cancel_undo",
+            "soft_reload"
+          ]
+        },
+        {
+          "name": "scene_query_system",
+          "line": 130,
+          "actions": [
+            "check_ready",
+            "check_dirty",
+            "list_classes",
+            "list_components",
+            "check_script",
+            "find_nodes_by_asset"
+          ]
+        }
+      ]
+    },
+    {
+      "file": "scene-view-tools.ts",
+      "tools": [
+        {
+          "name": "scene_view_gizmo_management",
+          "line": 7,
+          "actions": [
+            "change_tool",
+            "query_tool",
+            "change_pivot",
+            "query_pivot",
+            "change_coordinate",
+            "query_coordinate",
+            "query_view_mode"
+          ]
+        },
+        {
+          "name": "scene_view_mode_control",
+          "line": 37,
+          "actions": [
+            "change_2d_3d",
+            "query_2d_3d",
+            "set_grid",
+            "query_grid"
+          ]
+        },
+        {
+          "name": "scene_view_icon_gizmo",
+          "line": 60,
+          "actions": [
+            "set_3d_mode",
+            "query_3d_mode",
+            "set_size",
+            "query_size"
+          ]
+        },
+        {
+          "name": "scene_view_camera_control",
+          "line": 85,
+          "actions": [
+            "focus_on_nodes",
+            "align_camera_with_view",
+            "align_view_with_node"
+          ]
+        },
+        {
+          "name": "scene_view_status_management",
+          "line": 105,
+          "actions": [
+            "get_status",
+            "reset_view"
+          ]
+        }
+      ]
+    },
+    {
+      "file": "server-tools.ts",
+      "tools": [
+        {
+          "name": "server_information",
+          "line": 8,
+          "actions": [
+            "get_ip_list",
+            "get_sorted_ip_list",
+            "get_port",
+            "get_comprehensive_status"
+          ]
+        },
+        {
+          "name": "server_connectivity",
+          "line": 25,
+          "actions": [
+            "test_connectivity",
+            "get_network_interfaces"
+          ]
+        }
+      ]
+    },
+    {
+      "file": "validation-tools.ts",
+      "tools": [
+        {
+          "name": "validate_json_params",
+          "line": 9,
+          "actions": null
+        },
+        {
+          "name": "safe_string_value",
+          "line": 27,
+          "actions": null
+        },
+        {
+          "name": "format_mcp_request",
+          "line": 41,
+          "actions": null
+        }
+      ]
+    }
+  ]
+}

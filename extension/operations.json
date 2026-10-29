@@ -1,0 +1,3618 @@
+[
+  {
+    "action": "scene.view",
+    "name": "scene_view",
+    "domain": "scene",
+    "description": "Control and inspect Creator scene viewport state in one compact operation: gizmo tool/pivot/coordinate, 2D/3D mode, grid, icon gizmo, focus and align. These settings affect the editor viewport, not saved game content.",
+    "readOnly": false,
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+        "action": {
+          "type": "string",
+          "enum": [
+            "inspect",
+            "configure",
+            "focus",
+            "align-camera",
+            "align-node",
+            "reset"
+          ]
+        },
+        "tool": {
+          "type": "string",
+          "enum": [
+            "position",
+            "rotation",
+            "scale",
+            "rect"
+          ]
+        },
+        "pivot": {
+          "type": "string",
+          "enum": [
+            "pivot",
+            "center"
+          ]
+        },
+        "coordinate": {
+          "type": "string",
+          "enum": [
+            "local",
+            "global"
+          ]
+        },
+        "is2D": {
+          "type": "boolean"
+        },
+        "grid": {
+          "type": "boolean"
+        },
+        "icon3D": {
+          "type": "boolean"
+        },
+        "iconSize": {
+          "type": "integer",
+          "minimum": 10,
+          "maximum": 100
+        },
+        "nodes": {
+          "default": [],
+          "maxItems": 200,
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1000
+          }
+        }
+      },
+      "required": [
+        "action"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "action": "reference.image",
+    "name": "reference_image",
+    "domain": "reference",
+    "description": "Manage Creator reference-image overlays with bounded path validation and native readback. Images are external design files, not project assets; configure position/scale/opacity and inspect or clear the current scene overlay.",
+    "readOnly": false,
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+        "action": {
+          "type": "string",
+          "enum": [
+            "inspect",
+            "add",
+            "remove",
+            "switch",
+            "configure",
+            "refresh",
+            "clear"
+          ]
+        },
+        "paths": {
+          "maxItems": 20,
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 4000
+          }
+        },
+        "path": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4000
+        },
+        "scene": {
+          "type": "string",
+          "minLength": 1
+        },
+        "x": {
+          "type": "number"
+        },
+        "y": {
+          "type": "number"
+        },
+        "sx": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "maximum": 100
+        },
+        "sy": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "maximum": 100
+        },
+        "opacity": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+        }
+      },
+      "required": [
+        "action"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "action": "font.inspect",
+    "name": "font_inspect",
+    "domain": "font",
+    "description": "Load an imported Font through the installed engine. Report TTF/bitmap kind, bitmap texture/glyphs and optional missing character sample. TTF/system glyph coverage and fallback remain unknown; loaded is not visual verification.",
+    "readOnly": true,
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+        "asset": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1000
+        },
+        "text": {
+          "default": "",
+          "type": "string",
+          "maxLength": 10000
+        }
+      },
+      "required": [
+        "asset"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "action": "text.inspect",
+    "name": "text_inspect",
+    "domain": "text",
+    "description": "Inspect existing Label/RichText, observed font/actual shrink size and text preview. Does not force layout or modify render data. includeText returns full source; use ui.measure and runtime screenshot for geometry/display.",
+    "readOnly": true,
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+        "node": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1000
+        },
+        "component": {
+          "default": "cc.Label",
+          "type": "string",
+          "enum": [
+            "cc.Label",
+            "cc.RichText"
+          ]
+        },
+        "includeText": {
+          "default": false,
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "node"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "action": "text.configure",
+    "name": "text_configure",
+    "domain": "text",
+    "description": "Configure an existing Label/RichText using semantic enums and system or imported font. Uses native typed component.patch with undo/readback/recovery. RichText requires TTF; bitmap fonts work with Label. RichText inline styles use markup. No component is added, no save; dryRun validates only.",
+    "readOnly": false,
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+        "node": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1000
+        },
+        "component": {
+          "default": "cc.Label",
+          "type": "string",
+          "enum": [
+            "cc.Label",
+            "cc.RichText"
+          ]
+        },
+        "text": {
+          "type": "string",
+          "maxLength": 50000
+        },
+        "font": {
+          "anyOf": [
+            {
+              "type": "object",
+              "properties": {
+                "system": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 150
+                }
+              },
+              "required": [
+                "system"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "asset": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 1000
+                }
+              },
+              "required": [
+                "asset"
+              ],
+              "additionalProperties": false
+            }
+          ]
+        },
+        "fontSize": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "maximum": 500
+        },
+        "lineHeight": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "maximum": 1000
+        },
+        "color": {
+          "type": "object",
+          "properties": {
+            "r": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 255
+            },
+            "g": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 255
+            },
+            "b": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 255
+            },
+            "a": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 255
+            }
+          },
+          "required": [
+            "r",
+            "g",
+            "b",
+            "a"
+          ],
+          "additionalProperties": false
+        },
+        "horizontalAlign": {
+          "type": "string",
+          "enum": [
+            "LEFT",
+            "CENTER",
+            "RIGHT"
+          ]
+        },
+        "verticalAlign": {
+          "type": "string",
+          "enum": [
+            "TOP",
+            "CENTER",
+            "BOTTOM"
+          ]
+        },
+        "overflow": {
+          "type": "string",
+          "enum": [
+            "NONE",
+            "CLAMP",
+            "SHRINK",
+            "RESIZE_HEIGHT"
+          ]
+        },
+        "wrap": {
+          "type": "boolean"
+        },
+        "spacing": {
+          "type": "number",
+          "minimum": -100,
+          "maximum": 500
+        },
+        "bold": {
+          "type": "boolean"
+        },
+        "italic": {
+          "type": "boolean"
+        },
+        "underline": {
+          "type": "boolean"
+        },
+        "maxWidth": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 10000
+        },
+        "dryRun": {
+          "default": false,
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "node"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "action": "ui.measure",
+    "name": "ui_measure",
+    "domain": "ui",
+    "description": "Measure project UITransform own rectangle corners and AABB in nearest Canvas local coordinates; includes camera/layer and observed Label/RichText state. UUID/path/unique name; bounded subtree optional. Not screen pixels, glyph ink, occlusion or hit-test proof.",
+    "readOnly": true,
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+        "node": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1000
+        },
+        "subtree": {
+          "default": false,
+          "type": "boolean"
+        },
+        "includeInactive": {
+          "default": false,
+          "type": "boolean"
+        },
+        "maxNodes": {
+          "default": 200,
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 2000
+        },
+        "detail": {
+          "default": "compact",
+          "type": "string",
+          "enum": [
+            "compact",
+            "full"
+          ]
+        }
+      },
+      "required": [
+        "node"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "action": "ui.validate",
+    "name": "ui_validate",
+    "domain": "ui",
+    "description": "Diagnose project UI rectangles and typography with rule IDs/evidence: zero size, missing Canvas, camera/layer, Canvas overflow, missing font, small actual text and missing bitmap glyphs. Optional potential button AABB overlap is informational, not occlusion proof. No auto-fix; budgets/truncation explicit. Omitting node scans project scene.",
+    "readOnly": true,
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+        "node": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1000
+        },
+        "includeInactive": {
+          "default": false,
+          "type": "boolean"
+        },
+        "maxNodes": {
+          "default": 500,
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 2000
+        },
+        "limit": {
+          "default": 100,
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 500
+        },
+        "tolerance": {
+          "default": 0.5,
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "minFontSize": {
+          "default": 12,
+          "type": "number",
+          "minimum": 1,
+          "maximum": 100
+        },
+        "overlaps": {
+          "default": false,
+          "type": "boolean"
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  {
+    "action": "ui.layout",
+    "name": "ui_layout",
+    "domain": "ui",
+    "description": "Configure UI adaptation components through semantic fields with typed enum conversion and native readback. Supports Widget anchors, Layout flow/grid, ScrollView content/axes, Mask, SafeArea and BlockInputEvents. ensure adds a missing component; configure can dry-run; remove verifies absence. Node references accept UUID/path strings and are checked before edits.",
+    "readOnly": false,
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+        "action": {
+          "type": "string",
+          "enum": [
+            "inspect",
+            "configure",
+            "ensure",
+            "remove"
+          ]
+        },
+        "node": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1000
+        },
+        "component": {
+          "type": "string",
+          "enum": [
+            "widget",
+            "layout",
+            "scrollView",
+            "mask",
+            "safeArea",
+            "blockInputEvents",
+            "cc.Widget",
+            "cc.Layout",
+            "cc.ScrollView",
+            "cc.Mask",
+            "cc.SafeArea",
+            "cc.BlockInputEvents"
+          ]
+        },
+        "properties": {
+          "default": {},
+          "type": "object",
+          "propertyNames": {
+            "type": "string"
+          },
+          "additionalProperties": {}
+        },
+        "ensure": {
+          "default": true,
+          "type": "boolean"
+        },
+        "dryRun": {
+          "default": false,
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "action",
+        "node",
+        "component"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "action": "asset.info",
+    "name": "asset_info",
+    "domain": "asset",
+    "description": "Read compact imported asset identity, source SHA256, subassets, direct dependencies/users. Uses native AssetDB; source hashing limited to 16 MiB.",
+    "readOnly": true,
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+        "asset": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1000
+        }
+      },
+      "required": [
+        "asset"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "action": "asset.graph",
+    "name": "asset_graph",
+    "domain": "asset",
+    "description": "Read bounded native AssetDB dependency/user graph. Cached edges expire after 1.5s and invalidate on asset broadcasts. Budget/depth limits are explicit; dynamic string loads are outside this index. Both directions can reach unrelated shared users; prefer dependencies for build impact.",
+    "readOnly": true,
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+        "asset": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1000
+        },
+        "direction": {
+          "default": "dependencies",
+          "type": "string",
+          "enum": [
+            "dependencies",
+            "users",
+            "both"
+          ]
+        },
+        "type": {
+          "default": "all",
+          "type": "string",
+          "enum": [
+            "asset",
+            "script",
+            "all"
+          ]
+        },
+        "depth": {
+          "default": 2,
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 8
+        },
+        "maxNodes": {
+          "default": 100,
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 1000
+        },
+        "maxEdges": {
+          "default": 300,
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 3000
+        }
+      },
+      "required": [
+        "asset"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "action": "asset.import",
+    "name": "asset_import",
+    "domain": "asset",
+    "description": "Import a local absolute file/folder via native AssetDB without overwrite/rename. Includes binary assets and normal importer/meta behavior. dryRun prechecks source/destination only.",
+    "readOnly": false,
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+        "source": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1000
+        },
+        "url": {
+          "type": "string",
+          "maxLength": 1000,
+          "format": "starts_with",
+          "pattern": "^db:\\/\\/assets\\/.*"
+        },
+        "dryRun": {
+          "default": false,
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "source",
+        "url"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "action": "asset.move",
+    "name": "asset_move",
+    "domain": "asset",
+    "description": "Native AssetDB move of a project source file. Requires current SHA256 expectedRevision; refuses overwrite, dirty current scene, folders/subassets/internal assets. Move verifies main/subasset UUID preservation; copy verifies a fresh main UUID. Runtime string paths still need review.",
+    "readOnly": false,
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+        "asset": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1000
+        },
+        "url": {
+          "type": "string",
+          "maxLength": 1000,
+          "format": "starts_with",
+          "pattern": "^db:\\/\\/assets\\/.*"
+        },
+        "expectedRevision": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "dryRun": {
+          "default": false,
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "asset",
+        "url",
+        "expectedRevision"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "action": "asset.copy",
+    "name": "asset_copy",
+    "domain": "asset",
+    "description": "Native AssetDB copy of a project source file. Requires current SHA256 expectedRevision; refuses overwrite, dirty current scene, folders/subassets/internal assets. Move verifies main/subasset UUID preservation; copy verifies a fresh main UUID. Runtime string paths still need review.",
+    "readOnly": false,
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+        "asset": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1000
+        },
+        "url": {
+          "type": "string",
+          "maxLength": 1000,
+          "format": "starts_with",
+          "pattern": "^db:\\/\\/assets\\/.*"
+        },
+        "expectedRevision": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "dryRun": {
+          "default": false,
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "asset",
+        "url",
+        "expectedRevision"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "action": "asset.reimport",
+    "name": "asset_reimport",
+    "domain": "asset",
+    "description": "Reimport a project source file with expectedRevision and clean editor context; verify native UUID/URL after import.",
+    "readOnly": false,
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+        "asset": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1000
+        },
+        "expectedRevision": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      },
+      "required": [
+        "asset",
+        "expectedRevision"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "action": "asset.replace.plan",
+    "name": "asset_replace_plan",
+    "domain": "asset",
+    "description": "Plan exact serialized __uuid__ replacements across native direct users of one asset, requiring same imported type. Read-only to project assets. Returns planId, affected fields and unsupported users; unsupported users block apply. Excludes script class migrations and dynamic paths. Plans expire after 5 minutes/reload.",
+    "readOnly": true,
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+        "from": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1000
+        },
+        "to": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1000
+        },
+        "maxAssets": {
+          "default": 30,
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100
+        }
+      },
+      "required": [
+        "from",
+        "to"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "action": "asset.replace.apply",
+    "name": "asset_replace_apply",
+    "domain": "asset",
+    "description": "Apply a replacement plan once: recheck source hashes/users, create local backups, native AssetDB save and exact source readback. On failure best-effort restore only unchanged attempted writes, report incomplete recovery. Non-atomic across scene/runtime state; reopen affected scenes and verify.",
+    "readOnly": false,
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+        "planId": {
+          "type": "string",
+          "format": "uuid",
+          "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+        }
+      },
+      "required": [
+        "planId"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "action": "asset.restore",
+    "name": "asset_restore",
+    "domain": "asset",
+    "description": "Restore source backups from asset replacement or animation editing. Requires clean scene and exact post-write hashes; refuses stale/tampered/moved assets. Backups current source before restoring through AssetDB; does not overwrite meta. Non-atomic across files.",
+    "readOnly": false,
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+        "backupId": {
+          "type": "string",
+          "format": "uuid",
+          "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+        },
+        "dryRun": {
+          "default": false,
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "backupId"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "action": "animation.create",
+    "name": "animation_create",
+    "domain": "animation",
+    "description": "Create a native serialized .anim using installed engine track APIs: scalar/vector/color/size/quaternion/object channels, linear/constant/cubic keys and component event methods. Strict sorted times; object asset references resolved before save. No overwrite; dryRun does not save. Binding and runtime playback are separate.",
+    "readOnly": false,
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+        "url": {
+          "type": "string",
+          "maxLength": 1000,
+          "format": "ends_with",
+          "allOf": [
+            {
+              "pattern": "^db:\\/\\/assets\\/.*"
+            },
+            {
+              "pattern": ".*\\.anim$"
+            }
+          ]
+        },
+        "spec": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 100
+            },
+            "duration": {
+              "type": "number",
+              "exclusiveMinimum": 0,
+              "maximum": 86400
+            },
+            "sample": {
+              "default": 60,
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 240
+            },
+            "speed": {
+              "default": 1,
+              "type": "number",
+              "exclusiveMinimum": 0,
+              "maximum": 100
+            },
+            "wrap": {
+              "default": "Normal",
+              "type": "string",
+              "enum": [
+                "Normal",
+                "Loop",
+                "PingPong",
+                "Reverse",
+                "LoopReverse"
+              ]
+            },
+            "tracks": {
+              "minItems": 1,
+              "maxItems": 100,
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "enum": [
+                      "real",
+                      "vector2",
+                      "vector3",
+                      "vector4",
+                      "color",
+                      "size",
+                      "quat",
+                      "object"
+                    ]
+                  },
+                  "nodePath": {
+                    "default": "",
+                    "type": "string",
+                    "maxLength": 500
+                  },
+                  "component": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 150
+                  },
+                  "property": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 200
+                  },
+                  "channels": {
+                    "type": "object",
+                    "propertyNames": {
+                      "type": "string"
+                    },
+                    "additionalProperties": {
+                      "minItems": 1,
+                      "maxItems": 2000,
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "time": {
+                            "type": "number",
+                            "minimum": 0,
+                            "maximum": 86400
+                          },
+                          "value": {
+                            "anyOf": [
+                              {
+                                "type": "number"
+                              },
+                              {
+                                "type": "string",
+                                "maxLength": 5000
+                              },
+                              {
+                                "type": "boolean"
+                              },
+                              {
+                                "type": "null"
+                              },
+                              {
+                                "type": "object",
+                                "properties": {
+                                  "$asset": {
+                                    "type": "string",
+                                    "minLength": 1,
+                                    "maxLength": 1000
+                                  }
+                                },
+                                "required": [
+                                  "$asset"
+                                ],
+                                "additionalProperties": false
+                              },
+                              {
+                                "type": "object",
+                                "properties": {
+                                  "x": {
+                                    "type": "number"
+                                  },
+                                  "y": {
+                                    "type": "number"
+                                  },
+                                  "z": {
+                                    "type": "number"
+                                  },
+                                  "w": {
+                                    "type": "number"
+                                  }
+                                },
+                                "required": [
+                                  "x",
+                                  "y",
+                                  "z",
+                                  "w"
+                                ],
+                                "additionalProperties": false
+                              }
+                            ]
+                          },
+                          "interpolation": {
+                            "type": "string",
+                            "enum": [
+                              "LINEAR",
+                              "CONSTANT",
+                              "CUBIC"
+                            ]
+                          },
+                          "leftTangent": {
+                            "type": "number"
+                          },
+                          "rightTangent": {
+                            "type": "number"
+                          }
+                        },
+                        "required": [
+                          "time",
+                          "value"
+                        ],
+                        "additionalProperties": false
+                      }
+                    }
+                  }
+                },
+                "required": [
+                  "type",
+                  "property",
+                  "channels"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "events": {
+              "default": [],
+              "maxItems": 500,
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "time": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 86400
+                  },
+                  "method": {
+                    "type": "string",
+                    "pattern": "^[A-Za-z][A-Za-z0-9_]*$"
+                  },
+                  "args": {
+                    "default": [],
+                    "maxItems": 10,
+                    "type": "array",
+                    "items": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "maxLength": 1000
+                        },
+                        {
+                          "type": "number"
+                        },
+                        {
+                          "type": "boolean"
+                        }
+                      ]
+                    }
+                  }
+                },
+                "required": [
+                  "time",
+                  "method"
+                ],
+                "additionalProperties": false
+              }
+            }
+          },
+          "required": [
+            "name",
+            "duration",
+            "tracks"
+          ],
+          "additionalProperties": false
+        },
+        "dryRun": {
+          "default": false,
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "url",
+        "spec"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "action": "animation.edit",
+    "name": "animation_edit",
+    "domain": "animation",
+    "description": "Edit a project .anim source with expectedRevision and backup. Metadata patch preserves tracks/events unless supplied; supplied arrays replace the entire track/event list. Native deserialize resolves asset refs, checks duration and reserializes. Model-imported clips are excluded. Restore with asset.restore.",
+    "readOnly": false,
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+        "asset": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1000
+        },
+        "expectedRevision": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "spec": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 100
+            },
+            "duration": {
+              "type": "number",
+              "exclusiveMinimum": 0,
+              "maximum": 86400
+            },
+            "sample": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 240
+            },
+            "speed": {
+              "type": "number",
+              "exclusiveMinimum": 0,
+              "maximum": 100
+            },
+            "wrap": {
+              "type": "string",
+              "enum": [
+                "Normal",
+                "Loop",
+                "PingPong",
+                "Reverse",
+                "LoopReverse"
+              ]
+            },
+            "tracks": {
+              "maxItems": 100,
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "enum": [
+                      "real",
+                      "vector2",
+                      "vector3",
+                      "vector4",
+                      "color",
+                      "size",
+                      "quat",
+                      "object"
+                    ]
+                  },
+                  "nodePath": {
+                    "default": "",
+                    "type": "string",
+                    "maxLength": 500
+                  },
+                  "component": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 150
+                  },
+                  "property": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 200
+                  },
+                  "channels": {
+                    "type": "object",
+                    "propertyNames": {
+                      "type": "string"
+                    },
+                    "additionalProperties": {
+                      "minItems": 1,
+                      "maxItems": 2000,
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "time": {
+                            "type": "number",
+                            "minimum": 0,
+                            "maximum": 86400
+                          },
+                          "value": {
+                            "anyOf": [
+                              {
+                                "type": "number"
+                              },
+                              {
+                                "type": "string",
+                                "maxLength": 5000
+                              },
+                              {
+                                "type": "boolean"
+                              },
+                              {
+                                "type": "null"
+                              },
+                              {
+                                "type": "object",
+                                "properties": {
+                                  "$asset": {
+                                    "type": "string",
+                                    "minLength": 1,
+                                    "maxLength": 1000
+                                  }
+                                },
+                                "required": [
+                                  "$asset"
+                                ],
+                                "additionalProperties": false
+                              },
+                              {
+                                "type": "object",
+                                "properties": {
+                                  "x": {
+                                    "type": "number"
+                                  },
+                                  "y": {
+                                    "type": "number"
+                                  },
+                                  "z": {
+                                    "type": "number"
+                                  },
+                                  "w": {
+                                    "type": "number"
+                                  }
+                                },
+                                "required": [
+                                  "x",
+                                  "y",
+                                  "z",
+                                  "w"
+                                ],
+                                "additionalProperties": false
+                              }
+                            ]
+                          },
+                          "interpolation": {
+                            "type": "string",
+                            "enum": [
+                              "LINEAR",
+                              "CONSTANT",
+                              "CUBIC"
+                            ]
+                          },
+                          "leftTangent": {
+                            "type": "number"
+                          },
+                          "rightTangent": {
+                            "type": "number"
+                          }
+                        },
+                        "required": [
+                          "time",
+                          "value"
+                        ],
+                        "additionalProperties": false
+                      }
+                    }
+                  }
+                },
+                "required": [
+                  "type",
+                  "property",
+                  "channels"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "events": {
+              "maxItems": 500,
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "time": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 86400
+                  },
+                  "method": {
+                    "type": "string",
+                    "pattern": "^[A-Za-z][A-Za-z0-9_]*$"
+                  },
+                  "args": {
+                    "default": [],
+                    "maxItems": 10,
+                    "type": "array",
+                    "items": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "maxLength": 1000
+                        },
+                        {
+                          "type": "number"
+                        },
+                        {
+                          "type": "boolean"
+                        }
+                      ]
+                    }
+                  }
+                },
+                "required": [
+                  "time",
+                  "method"
+                ],
+                "additionalProperties": false
+              }
+            }
+          },
+          "additionalProperties": false
+        },
+        "dryRun": {
+          "default": false,
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "asset",
+        "expectedRevision",
+        "spec"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "action": "animation.inspect",
+    "name": "animation_inspect",
+    "domain": "animation",
+    "description": "Read a project .anim source through engine deserialization: revision, tracks/channel counts, path and events. keys=true includes full key values; avoid it unless needed.",
+    "readOnly": true,
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+        "asset": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1000
+        },
+        "keys": {
+          "default": false,
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "asset"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "action": "animation.sample",
+    "name": "animation_sample",
+    "domain": "animation",
+    "description": "Evaluate native clip curves at a time without modifying scene nodes. Returns per-channel samples, not proof of target binding/gameplay. Use animation.control and runtime.inspect in the preview for runtime verification.",
+    "readOnly": true,
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+        "asset": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1000
+        },
+        "time": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 86400
+        }
+      },
+      "required": [
+        "asset",
+        "time"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "action": "animation.bind",
+    "name": "animation_bind",
+    "domain": "animation",
+    "description": "Attach/reuse cc.Animation and bind an existing .anim, preserving existing clips. Optionally set default clip and playOnLoad. Native typed edits; save scene explicitly. This does not verify all animated target paths or business event handlers.",
+    "readOnly": false,
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+        "node": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1000
+        },
+        "asset": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1000
+        },
+        "defaultClip": {
+          "default": true,
+          "type": "boolean"
+        },
+        "playOnLoad": {
+          "default": true,
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "node",
+        "asset"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "action": "runtime.inspect",
+    "name": "runtime_inspect",
+    "domain": "runtime",
+    "description": "Read actual game node state in an MCP-owned preview/build window: transforms, UI size/anchor, Label/RichText font bindings and actual shrink size, Animation states, Spine tracks/bones and retained adapter events. Requires engine ready; exact runtime path/UUID or unique name. Runtime UUIDs differ from editor UUIDs. Event subscriptions start when using control operations.",
+    "readOnly": true,
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+        "windowId": {
+          "type": "integer",
+          "exclusiveMinimum": 0,
+          "maximum": 9007199254740991
+        },
+        "node": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1000
+        },
+        "bones": {
+          "default": [],
+          "maxItems": 30,
+          "type": "array",
+          "items": {
+            "type": "string",
+            "maxLength": 150
+          }
+        },
+        "after": {
+          "default": 0,
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "limit": {
+          "default": 30,
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100
+        }
+      },
+      "required": [
+        "windowId",
+        "node"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "action": "animation.control",
+    "name": "animation_control",
+    "domain": "animation",
+    "description": "Control cc.Animation in an MCP-owned running game window: play/pause/resume/stop/crossFade/sample. Runtime only, never saves editor content. sample pauses chosen/default state, sets time and samples actual targets. Inspect afterward to verify.",
+    "readOnly": false,
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+        "windowId": {
+          "type": "integer",
+          "exclusiveMinimum": 0,
+          "maximum": 9007199254740991
+        },
+        "node": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1000
+        },
+        "action": {
+          "type": "string",
+          "enum": [
+            "play",
+            "pause",
+            "resume",
+            "stop",
+            "crossFade",
+            "sample"
+          ]
+        },
+        "clip": {
+          "type": "string",
+          "minLength": 1
+        },
+        "fade": {
+          "default": 0.3,
+          "type": "number",
+          "minimum": 0,
+          "maximum": 60
+        },
+        "time": {
+          "default": 0,
+          "type": "number",
+          "minimum": 0,
+          "maximum": 86400
+        }
+      },
+      "required": [
+        "windowId",
+        "node",
+        "action"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "action": "spine.inspect",
+    "name": "spine_inspect",
+    "domain": "spine",
+    "description": "Load imported sp.SkeletonData using installed engine runtime. Read runtime/source version compatibility, parse success, animations, skins, bones, slots/events and direct textures. Binary null compatibility is not a positive version check.",
+    "readOnly": true,
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+        "asset": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1000
+        }
+      },
+      "required": [
+        "asset"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "action": "spine.configure",
+    "name": "spine_configure",
+    "domain": "spine",
+    "description": "Attach/reuse sp.Skeleton and bind a parsed compatible imported skeleton, validated skin/animation, loop and timeScale via typed native properties. Save scene explicitly. Not a skeleton authoring/exporter tool.",
+    "readOnly": false,
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+        "node": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1000
+        },
+        "asset": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1000
+        },
+        "skin": {
+          "type": "string",
+          "minLength": 1
+        },
+        "animation": {
+          "type": "string",
+          "minLength": 1
+        },
+        "loop": {
+          "default": true,
+          "type": "boolean"
+        },
+        "timeScale": {
+          "default": 1,
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+        }
+      },
+      "required": [
+        "node",
+        "asset"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "action": "spine.control",
+    "name": "spine_control",
+    "domain": "spine",
+    "description": "Control actual Spine runtime in an MCP-owned preview/build: play/queue tracks, skin, mix, clear, pause/resume. Validates animation/skin names. Retains bounded per-track complete/custom event observations without replacing global gameplay listeners. Changes are runtime only.",
+    "readOnly": false,
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+        "windowId": {
+          "type": "integer",
+          "exclusiveMinimum": 0,
+          "maximum": 9007199254740991
+        },
+        "node": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1000
+        },
+        "action": {
+          "type": "string",
+          "enum": [
+            "play",
+            "queue",
+            "skin",
+            "mix",
+            "clear",
+            "pause",
+            "resume"
+          ]
+        },
+        "animation": {
+          "type": "string",
+          "minLength": 1
+        },
+        "skin": {
+          "type": "string",
+          "minLength": 1
+        },
+        "track": {
+          "default": 0,
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 7
+        },
+        "loop": {
+          "default": true,
+          "type": "boolean"
+        },
+        "delay": {
+          "default": 0,
+          "type": "number",
+          "minimum": 0,
+          "maximum": 3600
+        },
+        "from": {
+          "type": "string",
+          "minLength": 1
+        },
+        "to": {
+          "type": "string",
+          "minLength": 1
+        },
+        "duration": {
+          "default": 0.3,
+          "type": "number",
+          "minimum": 0,
+          "maximum": 60
+        }
+      },
+      "required": [
+        "windowId",
+        "node",
+        "action"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "action": "build.platforms",
+    "name": "build_platforms",
+    "domain": "build",
+    "description": "List installed Creator build platforms. Dedicated validated task/artifact/preview workflow currently targets Web desktop/mobile; native platforms still require SDK/toolchain-specific acceptance.",
+    "readOnly": true,
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {},
+      "additionalProperties": false
+    }
+  },
+  {
+    "action": "build.start",
+    "name": "build_start",
+    "domain": "build",
+    "description": "Queue a native Web build of explicit saved project scenes. Requires clean editor and no running build. Uses unique output under project build/cocos-mcp; returns durable runId, not completion. Poll status, inspect logs/artifacts and launch built game. dryRun validates inputs only.",
+    "readOnly": false,
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+        "platform": {
+          "default": "web-desktop",
+          "type": "string",
+          "enum": [
+            "web-desktop",
+            "web-mobile"
+          ]
+        },
+        "scenes": {
+          "minItems": 1,
+          "maxItems": 100,
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1000
+          }
+        },
+        "startScene": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1000
+        },
+        "debug": {
+          "default": true,
+          "type": "boolean"
+        },
+        "sourceMaps": {
+          "default": false,
+          "type": "boolean"
+        },
+        "dryRun": {
+          "default": false,
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "scenes"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "action": "build.status",
+    "name": "build_status",
+    "domain": "build",
+    "description": "Read an owned build run by persistent runId and correlate unique native task. Reports native waiting/processing/success/failure/cancel, progress and bounded message. Unknown is not success; accepted/start is not completion.",
+    "readOnly": true,
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+        "runId": {
+          "type": "string",
+          "format": "uuid",
+          "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+        }
+      },
+      "required": [
+        "runId"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "action": "build.artifacts",
+    "name": "build_artifacts",
+    "domain": "build",
+    "description": "Require native terminal success, inventory owned Web output and verify nonempty index/JS. Optional per-file SHA256; bounded result. Files existing alone are not gameplay verification; use build.preview and runtime checks.",
+    "readOnly": true,
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+        "runId": {
+          "type": "string",
+          "format": "uuid",
+          "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+        },
+        "hashes": {
+          "default": false,
+          "type": "boolean"
+        },
+        "limit": {
+          "default": 30,
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 500
+        }
+      },
+      "required": [
+        "runId"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "action": "build.logs",
+    "name": "build_logs",
+    "domain": "build",
+    "description": "Read bounded native build log tail for an owned run. Last 128 KiB, optional substring filter and line limit. No arbitrary filesystem path access.",
+    "readOnly": true,
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+        "runId": {
+          "type": "string",
+          "format": "uuid",
+          "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+        },
+        "filter": {
+          "type": "string",
+          "maxLength": 200
+        },
+        "limit": {
+          "default": 40,
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 200
+        }
+      },
+      "required": [
+        "runId"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "action": "build.preview",
+    "name": "build_preview",
+    "domain": "build",
+    "description": "Verify successful owned build, serve only its artifacts on loopback and open in a sandboxed MCP game window. Reuses owned preview. Loaded does not prove game-ready; inspect runtime, console and screenshot. Server stops on extension unload or build.stopServer.",
+    "readOnly": false,
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+        "runId": {
+          "type": "string",
+          "format": "uuid",
+          "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+        },
+        "width": {
+          "default": 1100,
+          "type": "integer",
+          "minimum": 480,
+          "maximum": 2560
+        },
+        "height": {
+          "default": 800,
+          "type": "integer",
+          "minimum": 480,
+          "maximum": 1600
+        },
+        "testEvidence": {
+          "default": false,
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "runId"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "action": "build.stopServer",
+    "name": "build_stop_server",
+    "domain": "build",
+    "description": "Stop only this owned build static server. Preserve build files/native task; preview window can be closed separately.",
+    "readOnly": false,
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+        "runId": {
+          "type": "string",
+          "format": "uuid",
+          "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+        }
+      },
+      "required": [
+        "runId"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "action": "prefab.inspect",
+    "name": "prefab_inspect",
+    "domain": "prefab",
+    "description": "Inspect a project subtree/instance: actual prefab root, asset SHA256 revision, dependencies and external Node/Component references. Use UUIDs returned by prefab.open in prefab editing mode.",
+    "readOnly": true,
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+        "node": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "node"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "action": "prefab.validate",
+    "name": "prefab_validate",
+    "domain": "prefab",
+    "description": "Validate a project prefab source: serialized object references, AssetDB dependencies and registered classes. Returns SHA256 revision needed by apply/save/restore. Does not prove visual or runtime correctness.",
+    "readOnly": true,
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+        "asset": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "asset"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "action": "prefab.create",
+    "name": "prefab_create",
+    "domain": "prefab",
+    "description": "Create a linked prefab using Creator native serialization. Refuses overwrite, existing prefab membership and incoming/outgoing external Node/Component references. Creator REPLACES the subtree with new UUIDs and filename; use returned node UUID and resolve descendants again. dryRun prechecks only. Save scene explicitly.",
+    "readOnly": false,
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+        "node": {
+          "type": "string",
+          "minLength": 1
+        },
+        "url": {
+          "type": "string",
+          "format": "ends_with",
+          "allOf": [
+            {
+              "pattern": "^db:\\/\\/assets\\/.*"
+            },
+            {
+              "pattern": ".*\\.prefab$"
+            }
+          ]
+        },
+        "dryRun": {
+          "default": false,
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "node",
+        "url"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "action": "prefab.instantiate",
+    "name": "prefab_instantiate",
+    "domain": "prefab",
+    "description": "Instantiate an imported project prefab and verify linkage. parent accepts UUID/path/name; explicit content parent required in prefab mode. Returns node UUID. Save scene explicitly.",
+    "readOnly": false,
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+        "asset": {
+          "type": "string",
+          "minLength": 1
+        },
+        "parent": {
+          "type": "string",
+          "minLength": 1
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100
+        },
+        "position": {
+          "type": "object",
+          "properties": {
+            "x": {
+              "type": "number"
+            },
+            "y": {
+              "type": "number"
+            },
+            "z": {
+              "type": "number"
+            }
+          },
+          "required": [
+            "x",
+            "y",
+            "z"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "asset"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "action": "prefab.apply",
+    "name": "prefab_apply",
+    "domain": "prefab",
+    "description": "Apply a linked instance ROOT to its shared prefab asset with native Creator API. Refuses external refs and stale expectedRevision from inspect/validate. Saves local recoverable backup before writing. Affects other instances; scene save is explicit. dryRun does not write.",
+    "readOnly": false,
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+        "node": {
+          "type": "string",
+          "minLength": 1
+        },
+        "expectedRevision": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "dryRun": {
+          "default": false,
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "node",
+        "expectedRevision"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "action": "prefab.revert",
+    "name": "prefab_revert",
+    "domain": "prefab",
+    "description": "Restore a linked instance ROOT from its prefab asset using native undo-aware restore. Discards instance overrides; does not modify the asset. Save scene explicitly.",
+    "readOnly": false,
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+        "node": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "node"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "action": "prefab.unlink",
+    "name": "prefab_unlink",
+    "domain": "prefab",
+    "description": "Unlink a linked instance ROOT using native undo-aware API. recursive=false preserves nested prefab links; true unlinks nested instances too. Does not delete the asset. Save scene explicitly.",
+    "readOnly": false,
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+        "node": {
+          "type": "string",
+          "minLength": 1
+        },
+        "recursive": {
+          "default": false,
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "node"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "action": "prefab.open",
+    "name": "prefab_open",
+    "domain": "prefab",
+    "description": "Enter native prefab editing mode. Refuses unsaved current edits; returns real content root UUID, asset revision and returnAsset. Edit through normal node/component tools, then prefab.save and prefab.close.",
+    "readOnly": false,
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+        "asset": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "asset"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "action": "prefab.save",
+    "name": "prefab_save",
+    "domain": "prefab",
+    "description": "Save current native prefab editing context. Requires expectedRevision from open/validate, checks external refs, creates local backup, verifies serialized asset and clean dirty state. This writes a shared asset.",
+    "readOnly": false,
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+        "expectedRevision": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      },
+      "required": [
+        "expectedRevision"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "action": "prefab.close",
+    "name": "prefab_close",
+    "domain": "prefab",
+    "description": "Leave prefab editing mode for explicit returnAsset UUID/URL returned by prefab.open. Refuses unsaved edits; never discards or silently saves.",
+    "readOnly": false,
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+        "returnAsset": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "returnAsset"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "action": "prefab.restore",
+    "name": "prefab_restore",
+    "domain": "prefab",
+    "description": "Restore a prefab backup created by apply/save/restore through AssetDB, preserving .meta. Requires clean current context and expectedRevision; backs up current content first. backupId is project-local and bound to this exact asset. Reopen scene to verify instance sync.",
+    "readOnly": false,
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+        "asset": {
+          "type": "string",
+          "minLength": 1
+        },
+        "backupId": {
+          "type": "string",
+          "format": "uuid",
+          "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+        },
+        "expectedRevision": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "dryRun": {
+          "default": false,
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "asset",
+        "backupId",
+        "expectedRevision"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "action": "preview.open",
+    "name": "preview_open",
+    "domain": "preview",
+    "description": "Open/reload this project local Web preview in a dedicated sandboxed Electron window controlled by editor.screenshot and editor.input. Requires a saved scene. Reuses its own preview window. Loaded is not game-ready; inspect screenshot/runtime evidence. testEvidence adds mcp-test=1 for the bundled demo only.",
+    "readOnly": false,
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+        "width": {
+          "default": 1100,
+          "type": "integer",
+          "minimum": 480,
+          "maximum": 2560
+        },
+        "height": {
+          "default": 800,
+          "type": "integer",
+          "minimum": 480,
+          "maximum": 1600
+        },
+        "testEvidence": {
+          "default": false,
+          "type": "boolean"
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  {
+    "action": "preview.close",
+    "name": "preview_close",
+    "domain": "preview",
+    "description": "Close only a dedicated preview window created by preview.open. Does not close Creator editor windows or external browsers.",
+    "readOnly": false,
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+        "windowId": {
+          "type": "integer",
+          "exclusiveMinimum": 0,
+          "maximum": 9007199254740991
+        }
+      },
+      "required": [
+        "windowId"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "action": "preview.status",
+    "name": "preview_status",
+    "domain": "preview",
+    "description": "Read a dedicated MCP preview window: load state, canvas bounds, bounded browser console logs and optional bundled-demo test evidence. DOM/canvas readiness is not proof of working gameplay. Use screenshot and real input. since filters retained logs by timestamp in ms.",
+    "readOnly": true,
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+        "windowId": {
+          "type": "integer",
+          "exclusiveMinimum": 0,
+          "maximum": 9007199254740991
+        },
+        "since": {
+          "type": "number",
+          "minimum": 0
+        },
+        "limit": {
+          "default": 30,
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100
+        }
+      },
+      "required": [
+        "windowId"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "action": "node.resolve",
+    "name": "node_resolve",
+    "domain": "node",
+    "description": "Resolve a project node by UUID, exact Canvas/Panel path or unique name. Rejects ambiguous names and editor helper nodes. Returns a compact identity and component list.",
+    "readOnly": true,
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+        "target": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 500
+        }
+      },
+      "required": [
+        "target"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "action": "component.properties",
+    "name": "component_properties",
+    "domain": "component",
+    "description": "Read plain component properties and types without full inspector metadata. node accepts UUID/path/unique name; component accepts registered type or component UUID. Use names to return only needed fields.",
+    "readOnly": true,
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+        "node": {
+          "type": "string",
+          "minLength": 1
+        },
+        "component": {
+          "type": "string",
+          "minLength": 1
+        },
+        "names": {
+          "maxItems": 40,
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "required": [
+        "node",
+        "component"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "action": "component.patch",
+    "name": "component_patch",
+    "domain": "component",
+    "description": "Set 1–40 public top-level component properties using plain values and installed inspector types. References: {$node:\"Canvas/Panel\"}, {$component:{node:\"path\",type:\"cc.Label\"}}, {$asset:\"db://assets/...\"}, {uuid:\"...\"}, null to clear. Checks all fields/references before edits; one undo group, readback and best-effort restoration on error. Not a whole-scene transaction. dryRun makes no edits.",
+    "readOnly": false,
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+        "node": {
+          "type": "string",
+          "minLength": 1
+        },
+        "component": {
+          "type": "string",
+          "minLength": 1
+        },
+        "properties": {
+          "type": "object",
+          "propertyNames": {
+            "type": "string"
+          },
+          "additionalProperties": {}
+        },
+        "dryRun": {
+          "default": false,
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "node",
+        "component",
+        "properties"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "action": "script.status",
+    "name": "script_status",
+    "domain": "script",
+    "description": "Check whether a Component ccclass is registered in the scene. Optional asset URL/UUID verifies script ownership. This does not run full TypeScript type checking or prove latest source hot-reloaded.",
+    "readOnly": true,
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+        "className": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 150
+        },
+        "asset": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "className"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "action": "script.attach",
+    "name": "script_attach",
+    "domain": "script",
+    "description": "Wait for a project script ccclass to register, verify ownership against required asset URL/UUID, then attach once through native messages. Existing component is reused. Write scripts with asset.write first. Timeout never adds a component; inspect editor.logs. Saves are explicit. Registration does not prove latest hot-reloaded code or TS type correctness.",
+    "readOnly": false,
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+        "node": {
+          "type": "string",
+          "minLength": 1
+        },
+        "className": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 150
+        },
+        "asset": {
+          "type": "string",
+          "minLength": 1
+        },
+        "timeoutMs": {
+          "default": 15000,
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 25000
+        },
+        "requiredMethods": {
+          "maxItems": 30,
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[A-Za-z][A-Za-z0-9_]*$"
+          }
+        }
+      },
+      "required": [
+        "node",
+        "className",
+        "asset"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "action": "button.events",
+    "name": "button_events",
+    "domain": "button",
+    "description": "Configure Button click events through typed native property dumps. Resolve target by UUID/path/name, verify target component and handler. replace sets exact list; append skips identical events; remove uses zero-based index; clear removes all. dryRun validates without edits. Readback does not replace runtime click testing.",
+    "readOnly": false,
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+        "node": {
+          "type": "string",
+          "minLength": 1
+        },
+        "mode": {
+          "type": "string",
+          "enum": [
+            "replace",
+            "append",
+            "remove",
+            "clear"
+          ]
+        },
+        "index": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "events": {
+          "maxItems": 100,
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "target": {
+                "type": "string",
+                "minLength": 1
+              },
+              "component": {
+                "type": "string",
+                "minLength": 1
+              },
+              "handler": {
+                "type": "string",
+                "pattern": "^[A-Za-z][A-Za-z0-9_]*$"
+              },
+              "customEventData": {
+                "default": "",
+                "type": "string",
+                "maxLength": 5000
+              }
+            },
+            "required": [
+              "target",
+              "component",
+              "handler"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "dryRun": {
+          "default": false,
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "node",
+        "mode"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "action": "ui.templates",
+    "name": "ui_templates",
+    "domain": "ui",
+    "description": "List built-in UI templates and their intended parent. Templates are source-controlled and can be inspected without editing.",
+    "readOnly": true,
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {},
+      "additionalProperties": false
+    }
+  },
+  {
+    "action": "ui.build",
+    "name": "ui_build",
+    "domain": "ui",
+    "description": "Build UI through native undo-aware messages in the project hierarchy, excluding editor helper Canvases. Supply tree or template. Defaults to the sole active project Canvas; creates a Canvas and UI camera if absent unless createCanvas=false. An explicit parent must be inside a project Canvas. Multiple Canvases require parent. Checks hierarchy membership and camera; use dryRun first. Failure cleans up only this build.",
+    "readOnly": false,
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+        "parent": {
+          "type": "string",
+          "minLength": 1
+        },
+        "template": {
+          "type": "string",
+          "enum": [
+            "menu",
+            "dialog",
+            "hud"
+          ]
+        },
+        "tree": {
+          "$ref": "#/$defs/__schema0"
+        },
+        "dryRun": {
+          "default": false,
+          "type": "boolean"
+        },
+        "createCanvas": {
+          "default": true,
+          "type": "boolean"
+        }
+      },
+      "additionalProperties": false,
+      "$defs": {
+        "__schema0": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 100
+            },
+            "active": {
+              "type": "boolean"
+            },
+            "position": {
+              "type": "object",
+              "properties": {
+                "x": {
+                  "type": "number"
+                },
+                "y": {
+                  "type": "number"
+                },
+                "z": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "x",
+                "y",
+                "z"
+              ],
+              "additionalProperties": false
+            },
+            "size": {
+              "type": "object",
+              "properties": {
+                "width": {
+                  "type": "number",
+                  "exclusiveMinimum": 0,
+                  "maximum": 10000
+                },
+                "height": {
+                  "type": "number",
+                  "exclusiveMinimum": 0,
+                  "maximum": 10000
+                }
+              },
+              "required": [
+                "width",
+                "height"
+              ],
+              "additionalProperties": false
+            },
+            "components": {
+              "maxItems": 20,
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "properties": {
+                    "type": "object",
+                    "propertyNames": {
+                      "type": "string"
+                    },
+                    "additionalProperties": {}
+                  }
+                },
+                "required": [
+                  "type"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "children": {
+              "maxItems": 100,
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/__schema0"
+              }
+            }
+          },
+          "required": [
+            "name"
+          ],
+          "additionalProperties": false
+        }
+      }
+    }
+  },
+  {
+    "action": "scene.snapshot",
+    "name": "scene_snapshot",
+    "domain": "scene",
+    "description": "Capture a bounded scene snapshot in editor memory (max 8); returns its id and node count. Snapshots contain structure, transforms, UI size and label text, not a complete scene serialization. Not an undo backup.",
+    "readOnly": true,
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {},
+      "additionalProperties": false
+    }
+  },
+  {
+    "action": "scene.diff",
+    "name": "scene_diff",
+    "domain": "scene",
+    "description": "Compare a saved snapshot to the current scene; reports added/removed/changed nodes. IDs expire on extension reload. Checks structural and selected UI properties only.",
+    "readOnly": true,
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+        "snapshotId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "limit": {
+          "default": 100,
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 500
+        }
+      },
+      "required": [
+        "snapshotId"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "action": "scene.validate",
+    "name": "scene_validate",
+    "domain": "scene",
+    "description": "Check scene for duplicate sibling names and zero-size UI transforms. Bounded structural/UI diagnostics; does not claim comprehensive asset-reference or visual validation.",
+    "readOnly": true,
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+        "limit": {
+          "default": 100,
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 500
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  {
+    "action": "knowledge.query",
+    "name": "knowledge_query",
+    "domain": "knowledge",
+    "description": "Search bundled practical guidance for UI, undo, prefabs, animation, assets, debugging and build workflows. Results distinguish implemented tools from workflow advice.",
+    "readOnly": true,
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+        "query": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "limit": {
+          "default": 3,
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 10
+        }
+      },
+      "required": [
+        "query"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "action": "status",
+    "name": "editor_status",
+    "domain": "status",
+    "description": "Check bridge connection, actual Creator version and configured project. Does not require the scene to be ready.",
+    "readOnly": true,
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {},
+      "additionalProperties": false
+    }
+  },
+  {
+    "action": "operation.status",
+    "name": "editor_operation_status",
+    "domain": "operation",
+    "description": "Inspect a timed-out request by requestId. Completed means the handler returned; verify resulting editor state. History holds up to 200 operations.",
+    "readOnly": true,
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+        "requestId": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "requestId"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "action": "events",
+    "name": "editor_events",
+    "domain": "events",
+    "description": "Read recent bridge operation events and scene/save/compile/build broadcasts. This is not the complete Creator console. Use after=latest to poll incrementally.",
+    "readOnly": true,
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+        "after": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  {
+    "action": "editor.logs",
+    "name": "editor_logs",
+    "domain": "editor",
+    "description": "Read Creator console logs (including errors and compilation messages) via Editor.Logger.query. Filter by level, message substring, or since timestamp in milliseconds. Returns the latest matching entries.",
+    "readOnly": true,
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+        "level": {
+          "type": "string",
+          "enum": [
+            "log",
+            "info",
+            "warn",
+            "error"
+          ]
+        },
+        "filter": {
+          "type": "string"
+        },
+        "since": {
+          "type": "number",
+          "minimum": 0
+        },
+        "limit": {
+          "default": 100,
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 500
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  {
+    "action": "editor.api",
+    "name": "editor_api",
+    "domain": "editor",
+    "description": "Read actual installed Creator/engine TypeScript declarations to discover precise parameters before invoking advanced APIs. source=message/types requires package; editor is Editor API; engine is project cc.d.ts. Search returns matching line numbers, then use startLine to read context.",
+    "readOnly": true,
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+        "source": {
+          "default": "message",
+          "type": "string",
+          "enum": [
+            "message",
+            "types",
+            "editor",
+            "engine"
+          ]
+        },
+        "package": {
+          "default": "scene",
+          "type": "string"
+        },
+        "search": {
+          "type": "string"
+        },
+        "startLine": {
+          "default": 1,
+          "type": "integer",
+          "exclusiveMinimum": 0,
+          "maximum": 9007199254740991
+        },
+        "limit": {
+          "default": 100,
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 300
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  {
+    "action": "editor.messages",
+    "name": "editor_messages",
+    "domain": "editor",
+    "description": "Discover installed editor/extension messages with localized documentation and examples. Filter by package, e.g. scene, asset-db, builder, preview, animation. Private messages may change between Creator versions.",
+    "readOnly": true,
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+        "package": {
+          "type": "string"
+        },
+        "filter": {
+          "type": "string"
+        },
+        "publicOnly": {
+          "type": "boolean"
+        },
+        "offset": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "limit": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 500
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  {
+    "action": "editor.request",
+    "name": "editor_request",
+    "domain": "editor",
+    "description": "Invoke any installed Creator message. Discover its exact arguments with editor_messages first. request awaits its handler; send only acknowledges dispatch and can trigger UI operations without a reply.",
+    "readOnly": false,
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+        "package": {
+          "type": "string",
+          "minLength": 1
+        },
+        "message": {
+          "type": "string",
+          "minLength": 1
+        },
+        "args": {
+          "default": [],
+          "type": "array",
+          "items": {}
+        },
+        "mode": {
+          "default": "request",
+          "type": "string",
+          "enum": [
+            "request",
+            "send"
+          ]
+        }
+      },
+      "required": [
+        "package",
+        "message"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "action": "editor.script",
+    "name": "editor_script",
+    "domain": "editor",
+    "description": "Run an async JavaScript function body in the editor main process (Editor, require, args) or scene process (cc, Editor, require, args). Full local trust, no sandbox. Explicitly return plain JSON; never return engine/native objects. Direct scene engine mutations may bypass undo/dirty tracking; prefer native messages, then verify and save.",
+    "readOnly": false,
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+        "context": {
+          "type": "string",
+          "enum": [
+            "main",
+            "scene"
+          ]
+        },
+        "code": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 500000
+        },
+        "args": {
+          "default": {},
+          "type": "object",
+          "propertyNames": {
+            "type": "string"
+          },
+          "additionalProperties": {}
+        }
+      },
+      "required": [
+        "context",
+        "code"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "action": "scene.tree",
+    "name": "scene_tree",
+    "domain": "scene",
+    "description": "Read the open scene node hierarchy, optionally rooted at uuid. Query object dumps with node_inspect before setting properties.",
+    "readOnly": true,
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+        "uuid": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  {
+    "action": "scene.open",
+    "name": "scene_open",
+    "domain": "scene",
+    "description": "Open an existing .scene asset by db:// URL or asset UUID. Refuses if current scene has unsaved edits.",
+    "readOnly": false,
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+        "asset": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "asset"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "action": "scene.save",
+    "name": "scene_save",
+    "domain": "scene",
+    "description": "Save the current scene and check its dirty state. Untitled scenes may require a Save As dialog; prefer opening an existing scene first.",
+    "readOnly": false,
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {},
+      "additionalProperties": false
+    }
+  },
+  {
+    "action": "node.inspect",
+    "name": "node_inspect",
+    "domain": "node",
+    "description": "Get the full Creator inspector dump for a node or component. Use dump types/paths to update properties.",
+    "readOnly": true,
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+        "uuid": {
+          "type": "string",
+          "minLength": 1
+        },
+        "kind": {
+          "default": "node",
+          "type": "string",
+          "enum": [
+            "node",
+            "component"
+          ]
+        }
+      },
+      "required": [
+        "uuid"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "action": "node.create",
+    "name": "node_create",
+    "domain": "node",
+    "description": "Create an undoable node, or instantiate a prefab/built-in asset via assetUuid. Returns the new node UUID.",
+    "readOnly": false,
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "parent": {
+          "type": "string"
+        },
+        "assetUuid": {
+          "type": "string"
+        },
+        "position": {
+          "type": "object",
+          "properties": {
+            "x": {
+              "type": "number"
+            },
+            "y": {
+              "type": "number"
+            },
+            "z": {
+              "type": "number"
+            }
+          },
+          "required": [
+            "x",
+            "y",
+            "z"
+          ]
+        },
+        "nameIncrease": {
+          "default": false,
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "name"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "action": "node.remove",
+    "name": "node_remove",
+    "domain": "node",
+    "description": "Delete the specified scene nodes using the editor.",
+    "readOnly": false,
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+        "uuids": {
+          "minItems": 1,
+          "maxItems": 200,
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "required": [
+        "uuids"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "action": "node.duplicate",
+    "name": "node_duplicate",
+    "domain": "node",
+    "description": "Duplicate scene nodes using Creator.",
+    "readOnly": false,
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+        "uuids": {
+          "minItems": 1,
+          "maxItems": 200,
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "required": [
+        "uuids"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "action": "node.reparent",
+    "name": "node_reparent",
+    "domain": "node",
+    "description": "Move scene nodes under a parent, optionally preserving world transforms.",
+    "readOnly": false,
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+        "uuids": {
+          "minItems": 1,
+          "maxItems": 200,
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "parent": {
+          "type": "string",
+          "minLength": 1
+        },
+        "keepWorldTransform": {
+          "default": true,
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "uuids",
+        "parent"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "action": "property.set",
+    "name": "property_set",
+    "domain": "property",
+    "description": "Set one inspector property through Creator with undo recording. Provide a dump using the actual type and new value from node_inspect, e.g. {type:\"String\",value:\"Player\"}. Node paths include name, position, rotation, scale; component paths are relative to its UUID.",
+    "readOnly": false,
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+        "uuid": {
+          "type": "string",
+          "minLength": 1
+        },
+        "path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "dump": {
+          "type": "object",
+          "propertyNames": {
+            "type": "string"
+          },
+          "additionalProperties": {}
+        }
+      },
+      "required": [
+        "uuid",
+        "path",
+        "dump"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "action": "component.add",
+    "name": "component_add",
+    "domain": "component",
+    "description": "Add a registered component (e.g. cc.Label, cc.Sprite, cc.RigidBody2D or a project ccclass) to a node; return its updated dump.",
+    "readOnly": false,
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+        "uuid": {
+          "type": "string",
+          "minLength": 1
+        },
+        "component": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "uuid",
+        "component"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "action": "component.remove",
+    "name": "component_remove",
+    "domain": "component",
+    "description": "Remove a component by its component UUID.",
+    "readOnly": false,
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+        "uuid": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "uuid"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "action": "selection",
+    "name": "editor_selection",
+    "domain": "editor",
+    "description": "Get selection, or set it when uuids is supplied. type is node or asset. An empty uuids array clears selection.",
+    "readOnly": false,
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+        "type": {
+          "default": "node",
+          "type": "string",
+          "enum": [
+            "node",
+            "asset"
+          ]
+        },
+        "uuids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  {
+    "action": "asset.query",
+    "name": "asset_query",
+    "domain": "asset",
+    "description": "Search the Creator asset database. Example pattern db://assets/**/*.scene and type cc.SceneAsset. Results are paginated.",
+    "readOnly": true,
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+        "pattern": {
+          "default": "db://assets/**",
+          "type": "string"
+        },
+        "type": {
+          "type": "string"
+        },
+        "offset": {
+          "default": 0,
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "limit": {
+          "default": 100,
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 500
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  {
+    "action": "asset.write",
+    "name": "asset_write",
+    "domain": "asset",
+    "description": "Create or save a text asset/script using Creator AssetDB, preserving meta/import behavior. Create refuses existing assets; save requires an existing asset. Use editor_request for import/copy/move/delete/reimport or binary assets.",
+    "readOnly": false,
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+        "url": {
+          "type": "string",
+          "format": "starts_with",
+          "pattern": "^db:\\/\\/assets\\/.*"
+        },
+        "content": {
+          "type": "string",
+          "maxLength": 1000000
+        },
+        "mode": {
+          "default": "create",
+          "type": "string",
+          "enum": [
+            "create",
+            "save"
+          ]
+        }
+      },
+      "required": [
+        "url",
+        "content"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "action": "project.read",
+    "name": "project_read",
+    "domain": "project",
+    "description": "Read a UTF-8 project file up to 1 MiB. Paths must remain inside the project after resolving symlinks. For assets write through asset_write.",
+    "readOnly": true,
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+        "path": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "path"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "action": "project.files",
+    "name": "project_files",
+    "domain": "project",
+    "description": "List a project directory, excluding generated/dependency directories.",
+    "readOnly": true,
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+        "path": {
+          "default": ".",
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  {
+    "action": "editor.panel",
+    "name": "editor_panel",
+    "domain": "editor",
+    "description": "Open an editor panel by registered name, e.g. inspector, assets, console, builder. Verify using screenshot.",
+    "readOnly": false,
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "name"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "action": "editor.windows",
+    "name": "editor_windows",
+    "domain": "editor",
+    "description": "List Electron windows owned by this Creator instance, IDs and content bounds in DIP coordinates.",
+    "readOnly": true,
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {},
+      "additionalProperties": false
+    }
+  },
+  {
+    "action": "editor.window",
+    "name": "editor_window",
+    "domain": "editor",
+    "description": "Focus/show/restore, maximize or minimize a Creator window. Focus a minimized window before screenshot or input.",
+    "readOnly": false,
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+        "windowId": {
+          "type": "integer",
+          "exclusiveMinimum": 0,
+          "maximum": 9007199254740991
+        },
+        "action": {
+          "type": "string",
+          "enum": [
+            "focus",
+            "restore",
+            "maximize",
+            "minimize"
+          ]
+        }
+      },
+      "required": [
+        "windowId",
+        "action"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "action": "editor.screenshot",
+    "name": "editor_screenshot",
+    "domain": "editor",
+    "description": "Capture a Creator Electron window as PNG. Metadata includes originalSize, imageSize and contentBounds. Map image coordinates to content DIP: x * contentBounds.width / imageSize.width (and similarly y). Native scene surfaces can appear blank on some GPU configurations.",
+    "readOnly": true,
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+        "windowId": {
+          "type": "integer",
+          "exclusiveMinimum": 0,
+          "maximum": 9007199254740991
+        },
+        "maxWidth": {
+          "type": "integer",
+          "minimum": 320,
+          "maximum": 3840
+        }
+      },
+      "required": [
+        "windowId"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "action": "editor.input",
+    "name": "editor_input",
+    "domain": "editor",
+    "description": "Send input to an observed Creator window. Coordinates are content-local DIP, not desktop pixels. For a click send mouseDown and mouseUp; use mouseMove sequences for drag. text inserts Unicode at focus. This cannot control OS-native dialogs or external apps. Re-capture to verify.",
+    "readOnly": false,
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+        "windowId": {
+          "type": "integer",
+          "exclusiveMinimum": 0,
+          "maximum": 9007199254740991
+        },
+        "text": {
+          "type": "string",
+          "maxLength": 100000
+        },
+        "events": {
+          "maxItems": 200,
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": [
+                  "mouseDown",
+                  "mouseUp",
+                  "mouseMove",
+                  "mouseWheel",
+                  "keyDown",
+                  "keyUp",
+                  "char"
+                ]
+              },
+              "x": {
+                "type": "integer",
+                "minimum": -9007199254740991,
+                "maximum": 9007199254740991
+              },
+              "y": {
+                "type": "integer",
+                "minimum": -9007199254740991,
+                "maximum": 9007199254740991
+              },
+              "button": {
+                "type": "string",
+                "enum": [
+                  "left",
+                  "middle",
+                  "right"
+                ]
+              },
+              "clickCount": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 3
+              },
+              "deltaX": {
+                "type": "number"
+              },
+              "deltaY": {
+                "type": "number"
+              },
+              "keyCode": {
+                "type": "string"
+              },
+              "modifiers": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            },
+            "required": [
+              "type"
+            ]
+          }
+        }
+      },
+      "required": [
+        "windowId"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "action": "editor.menu",
+    "name": "editor_menu",
+    "domain": "editor",
+    "description": "List the actual application menu, or dispatch a leaf item using its numeric path from that list, e.g. [1,0]. Verify the resulting state separately.",
+    "readOnly": false,
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+        "path": {
+          "minItems": 1,
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          }
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+]
