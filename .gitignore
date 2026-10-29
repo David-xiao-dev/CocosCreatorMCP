@@ -1,0 +1,14 @@
+node_modules/
+.codex/
+test-project/library/
+test-project/temp/
+test-project/local/
+test-project/profiles/
+test-project/.codex/
+artifacts/
+test-project/
+extension/installation.json
+*.log
+.env
+.env.*
+!.env.example
