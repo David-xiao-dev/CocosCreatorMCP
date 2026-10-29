@@ -1,0 +1,53 @@
+name: Build complete extension
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: package-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci --ignore-scripts
+      - run: npm test
+      - run: npm run release:local
+      - name: Check ZIP interoperability
+        run: |
+          unzip -t artifacts/releases/*source.zip
+          unzip -t artifacts/releases/*extension.zip
+      - run: npm run release:verify
+      - name: Generate release notes
+        run: node scripts/release-notes.mjs > artifacts/release-notes.md
+      - name: Upload complete extension and release files
+        uses: actions/upload-artifact@v4
+        with:
+          name: complete-extension-and-release-files
+          if-no-files-found: error
+          retention-days: 30
+          path: |
+            artifacts/releases/*source.tar.gz
+            artifacts/releases/*source.zip
+            artifacts/releases/*extension.zip
+            artifacts/releases/*.sha256
+            artifacts/releases/SHA256SUMS.txt
+            artifacts/releases/manifest.json
+            artifacts/release-check.json
+            artifacts/release-notes.md
+      - name: Show download instructions
+        run: |
+          echo '## Complete extension is ready' >> "$GITHUB_STEP_SUMMARY"
+          echo 'Download **complete-extension-and-release-files** from the Artifacts section for this run, then extract the outer artifact ZIP.' >> "$GITHUB_STEP_SUMMARY"
+          echo 'The inner **cocos-creator-mcp-*-extension.zip** is the complete user installation package.' >> "$GITHUB_STEP_SUMMARY"
+          echo 'Upload the inner ZIP and its checksum to a GitHub Release for public distribution. Do not upload the outer artifact ZIP as the extension.' >> "$GITHUB_STEP_SUMMARY"
+          echo 'Users extract cocos-codex-bridge into their project extensions folder, enable it in Creator 3.8.8, and copy the AI client configuration from the panel.' >> "$GITHUB_STEP_SUMMARY"
