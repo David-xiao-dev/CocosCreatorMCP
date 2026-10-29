@@ -253,14 +253,16 @@ exports.ready = function () {
       text('#connection', data.settings.paused ? '编辑已暂停' : '桥接已就绪');
       $('#connection').classList.toggle('paused', data.settings.paused);
       text('#project-path', data.project || '等待编辑器…');
-      text('#editor-version', `Creator ${data.editorVersion || '—'} · MCP 0.8.0`);
+      text('#editor-version', `Creator ${data.editorVersion || '—'} · MCP ${data.mcpVersion || '—'}`);
       text('#stat-tools', '4'); text('#stat-operations', data.catalog.length);
       text('#stat-requests', data.traffic?.requests || 0); text('#stat-failed', data.counts?.failed || 0);
       text('#traffic', `${((data.traffic?.requestBytes || 0) / 1024).toFixed(1)} KB 请求 / ${((data.traffic?.responseBytes || 0) / 1024).toFixed(1)} KB 返回`);
       text('#pause', data.settings.paused ? '恢复编辑' : '暂停编辑');
       $('#scripts').checked = data.settings.allowScripts;
       text('#config', data.toml);
-      text('#config-note', data.installationReady ? '配置已填入本机路径。复制后加入 Codex MCP 设置并重启连接。' : '请先运行安装脚本以生成本机路径，再复制配置。');
+      text('#config-note', data.installationReady ? (data.installationMode === 'complete-extension' ? '完整扩展已就绪，无需另装 Node.js 或手动启动服务。复制配置加入客户端后连接；移动项目后请重新复制配置。' : '配置已填入本机路径。复制后加入客户端 MCP 设置并重启连接。') : data.installationError);
+      $('#copy-config').disabled = !data.installationReady;
+      $('#copy-json').disabled = !data.installationReady;
       activity();
       if (first) { capabilities(); templates(); }
     } catch (error) { notify(error.message); }
@@ -288,8 +290,8 @@ exports.ready = function () {
     try { await call('set-settings', { allowScripts: $('#scripts').checked }); await refresh(); }
     catch (error) { notify(error.message); refresh(); }
   });
-  $('#copy-config').addEventListener('click', () => data && copy(data.toml));
-  $('#copy-json').addEventListener('click', () => data && copy(JSON.stringify(data.config, null, 2)));
+  $('#copy-config').addEventListener('click', () => data?.installationReady && copy(data.toml));
+  $('#copy-json').addEventListener('click', () => data?.installationReady && copy(JSON.stringify(data.config, null, 2)));
   $('#copy-prompt').addEventListener('click', () => copy('使用 cocos_status 检查连接；通过 cocos_catalog 查找操作并按需读取参数；先观察当前场景，再批量执行修改。失败后检查已完成步骤，不要重放整个批次；完成后验证并保存。'));
   select(selected); refresh();
   const timer = setInterval(() => { if (!root.ownerDocument.hidden) refresh(); }, 3000);

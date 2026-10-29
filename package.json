@@ -1,6 +1,6 @@
 {
   "name": "cocos-creator-mcp",
-  "version": "0.8.0",
+  "version": "0.8.1",
   "private": true,
   "type": "module",
   "description": "Source-available Cocos Creator editor control with compact MCP tools and native workflows",

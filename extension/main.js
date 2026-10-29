@@ -14,6 +14,7 @@ const { createTypography } = require('./typography.cjs');
 const { createEditorView } = require('./editor-view.cjs');
 const { createUILayout } = require('./ui-layout.cjs');
 const runtimeBrowser = require('./runtime-browser.cjs');
+const { connection } = require('./connection.cjs');
 const AsyncFunction = Object.getPrototypeOf(async function () {}).constructor;
 let bridge;
 const previewWindows = new Map();
@@ -386,13 +387,8 @@ exports.methods = {
   showStatus() { console.log('[Cocos MCP]', bridge?.getStatus() || 'Not started'); },
   openPanel() { return Editor.Panel.open('cocos-codex-bridge'); },
   dashboard() {
-    let installation;
-    try { installation = JSON.parse(fs.readFileSync(path.join(__dirname, 'installation.json'), 'utf8')); } catch {}
-    const command = installation?.node || 'node';
-    const args = [installation?.server || '/path/to/cocos-creator-mcp/src/server.mjs', '--project', Editor.Project.path];
-    const config = { mcpServers: { cocos_creator: { command, args } } };
-    const toml = `[mcp_servers.cocos_creator]\ncommand = ${JSON.stringify(command)}\nargs = ${JSON.stringify(args)}\nstartup_timeout_sec = 15\ntool_timeout_sec = 90\n`;
-    return { ...bridge?.dashboard(), settings: { ...settings }, config, toml, installationReady: !!installation, catalog: catalog.map(({ inputSchema, ...op }) => op), templates: Object.entries(require('./templates.cjs')).map(([id, t]) => ({ id, title: t.title, description: t.description })) };
+    const setup = connection({ directory: __dirname, project: Editor.Project.path });
+    return { ...bridge?.dashboard(), settings: { ...settings }, config: setup.config, toml: setup.toml, installationReady: setup.ready, installationMode: setup.mode, installationError: setup.error, mcpVersion: require('./package.json').version, catalog: catalog.map(({ inputSchema, ...op }) => op), templates: Object.entries(require('./templates.cjs')).map(([id, t]) => ({ id, title: t.title, description: t.description })) };
   },
   operationSchema(action) {
     const op = catalog.find(item => item.action === action);

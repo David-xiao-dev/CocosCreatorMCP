@@ -1,6 +1,6 @@
 # GitHub 首次建仓、打包与发布
 
-本文面向仓库维护者；终端用户请看 [环境安装与客户端连接](INSTALLATION.md)。当前建议以 **v0.8.0 开发预览（Pre-release）** 发布，列出已验证能力和已知问题，方便社区试用。发布 GitHub 源码、上传 Release 和发布 npm 是三件不同的事，本项目目前仍设置 `private:true`，不发布 npm。
+本文面向仓库维护者；终端用户请看 [环境安装与客户端连接](INSTALLATION.md)。当前建议以 **v0.8.1 开发预览（Pre-release）** 发布，列出已验证能力和已知问题，方便社区试用。发布 GitHub 源码、上传 Release 和发布 npm 是三件不同的事，本项目目前仍设置 `private:true`，不发布 npm。
 
 ## 1. 仓库内容和发布边界
 
@@ -61,7 +61,7 @@ ZIP 由 Node 脚本生成，不需要 7-Zip、PowerShell Compress-Archive 或其
 3. `extension/package.json` 的 version。
 4. README、CHANGELOG、覆盖记录与新增功能说明。
 
-CLI 帮助读取 package.json；控制台版本文本也应跟随版本更新。打包器会拒绝 package/lockfile/extension 的版本不一致。Tag 使用 `v0.8.0`，不能把 `v0.9.0` 指向 package version 0.8.0 的提交。
+CLI 帮助读取 package.json；控制台版本文本也应跟随版本更新。打包器会拒绝 package/lockfile/extension 的版本不一致。Tag 使用 `v0.8.1`，不能把 `v0.9.0` 指向 package version 0.8.1 的提交。
 
 发布说明应包含：问题/新增行为、测试方式、实际 Creator/OS、下载包区别、安装文档入口和已知限制。不要把通用脚本入口、工具数、JSON 字节减少宣传成 100% 编辑器覆盖或真实 Pro Token 领先。
 
@@ -73,23 +73,29 @@ CLI 帮助读取 package.json；控制台版本文本也应跟随版本更新。
 npm.cmd ci --ignore-scripts
 npm.cmd test
 npm.cmd run benchmark
-npm.cmd run release:check-version -- v0.8.0
+npm.cmd run release:check-version -- v0.8.1
 npm.cmd run release:local
 npm.cmd run release:verify
 ```
 
-最后一步会验证源码 TAR、源码 ZIP、扩展 ZIP 的哈希/文件清单/文件内容，在独立临时目录执行一次干净 `npm ci --ignore-scripts`，再运行自动测试和紧凑工具 benchmark。临时目录清理有路径边界检查。成功报告保存在 `artifacts/release-check.json`。
+打包时在隔离目录执行锁定依赖的 npm ci，完整扩展包含第三方 JS 包及其原始许可，不打包 Node 或 Creator 二进制。最后一步验证三个归档的哈希、清单和逐字节内容，执行全新源码安装、自动测试及 benchmark，还会解压完整扩展，用独立空格/中文目录和空 PATH 检查 STDIO 握手、四工具、schema、只读限制、批量引用和图像。CI 用 Node 执行该检查，真实 Creator 运行环境可在 Windows 本机另外验证：
+
+```powershell
+npm.cmd run release:verify -- --creator 'C:\ProgramData\cocos\editors\Creator\3.8.8\CocosCreator.exe'
+```
+
+临时目录清理有路径边界检查。成功报告保存在 `artifacts/release-check.json`。
 
 默认输出：
 
 ```text
 artifacts/releases/
-  cocos-creator-mcp-0.8.0-source.tar.gz
-  cocos-creator-mcp-0.8.0-source.tar.gz.sha256
-  cocos-creator-mcp-0.8.0-source.zip
-  cocos-creator-mcp-0.8.0-source.zip.sha256
-  cocos-creator-mcp-0.8.0-extension.zip
-  cocos-creator-mcp-0.8.0-extension.zip.sha256
+  cocos-creator-mcp-0.8.1-source.tar.gz
+  cocos-creator-mcp-0.8.1-source.tar.gz.sha256
+  cocos-creator-mcp-0.8.1-source.zip
+  cocos-creator-mcp-0.8.1-source.zip.sha256
+  cocos-creator-mcp-0.8.1-extension.zip
+  cocos-creator-mcp-0.8.1-extension.zip.sha256
   SHA256SUMS.txt
   manifest.json
 ```
@@ -97,12 +103,12 @@ artifacts/releases/
 | 产物 | 结构与用途 |
 | --- | --- |
 | source.tar.gz / source.zip | 顶层 `package/`，完整源码；使用者解压后运行 npm ci |
-| extension.zip | 顶层 `cocos-codex-bridge/`，手动放入游戏工程 extensions；附 LICENSE、README 和 docs/LICENSING.md |
+| extension.zip（推荐） | 顶层 `cocos-codex-bridge/`，包含 Creator 扩展、MCP 服务、锁定的 JS 依赖及其原始许可；解压到工程 extensions，启用后复制客户端配置 |
 | `.sha256` / SHA256SUMS.txt | 校验二进制归档的 SHA-256 |
 | manifest.json | 当前版本、每个归档文件名/哈希/大小与源码文件清单 |
 | release-check.json | 本次验证结果；位于 artifacts/，单独上传 |
 
-扩展 ZIP 是项目文件夹扩展，**不是完整 Node MCP 服务，也不是 Cocos Store 商店安装包**。首次用户应选 source ZIP。不要创建一个只有 extension.zip 的 Release，然后让用户寻找缺失的 src/server.mjs。
+从 0.8.1 开始，**extension ZIP 是面向普通用户的完整安装包**，包含 MCP 服务和依赖，使用用户已安装的 Creator 运行环境；无需用户安装 Node.js、运行 npm 或手动启动服务。初次仍须复制面板中的客户端配置，之后由客户端管理通信进程。它是普通项目文件夹扩展，不是 Cocos Store 商店安装包。源码 ZIP/TAR 仅面向源码开发者；0.8.0 及更早的 extension ZIP 只有桥接，不能按新方式安装。
 
 重新执行打包会更新本地同版本产物；一旦公开发布，同一 Tag 不要静默替换成不同代码。需要改动时发布新版本。打包后再次编辑源码，必须重新打包并校验，否则发布的是过时文件。
 
@@ -121,7 +127,7 @@ node scripts/install.mjs
 
 ## 5. 首次把源码提交到 GitHub
 
-如果源码目录尚未初始化 Git，按本节首次发布。在 GitHub 网页按第 1 节配置创建 **Public 空仓库 `CocosCreatorMCP`**，关闭自动生成 README、gitignore、LICENSE。已有远端仓库时跳过初始化，使用其正常提交/PR 流程。
+如果源码目录尚未初始化 Git，按本节首次发布。首次建仓时按第 1 节配置创建 **Public 空仓库 `CocosCreatorMCP`**，关闭自动生成 README、gitignore、LICENSE。已有远端仓库时跳过初始化，使用其正常提交/PR 流程。
 
 在本地源码根目录依次执行：
 
@@ -146,7 +152,7 @@ git config user.email 'YOUR_PUBLIC_OR_GITHUB_NOREPLY_EMAIL'
 完成暂存审阅后提交并关联远端：
 
 ```powershell
-git commit -m 'Initial source-available preview v0.8.0'
+git commit -m 'Initial source-available preview v0.8.1'
 git remote add origin https://github.com/YOUR_ACCOUNT/CocosCreatorMCP.git
 git remote -v
 git push -u origin main
@@ -171,8 +177,8 @@ git push -u origin main
 ```powershell
 git status --short
 git log -1 --oneline
-git tag -a v0.8.0 -m 'Cocos Creator MCP 0.8.0 development preview'
-git push origin v0.8.0
+git tag -a v0.8.1 -m 'Cocos Creator MCP 0.8.1 development preview'
+git push origin v0.8.1
 ```
 
 Tag 推送触发 `Build draft release`：
@@ -185,13 +191,13 @@ Tag 推送触发 `Build draft release`：
 
 默认停在草稿，不会自动成为公开 Release。工作流需要仓库允许 Actions 和 `contents:write`；不需要额外创建 PAT。失败时先看 Actions 日志。若只是 runner 网络故障，在 Tag 尚未创建 Release 的情况下重跑；如果同名草稿已存在，请编辑并维护该草稿，`gh release create` 不会自动覆盖它。
 
-草稿生成后：GitHub **Releases → 编辑对应 Draft**，检查说明/附件、保留 **This is a pre-release**，再点击 Publish release。推荐标题 `CocosCreatorMCP v0.8.0 (Preview)`。首次公开发布不建议标为稳定版或承诺全编辑器自动化。
+草稿生成后：GitHub **Releases → 编辑对应 Draft**，检查说明/附件、保留 **This is a pre-release**，再点击 Publish release。推荐标题 `CocosCreatorMCP v0.8.1 (Preview)`。首次公开发布不建议标为稳定版或承诺全编辑器自动化。
 
 也可以在 Actions 中手动运行 `Build draft release`，输入已经推送存在的 Tag。手动运行会检出该 Tag，而不是随意给另一个版本打标签。
 
 ### 方式 B：网页手动上传
 
-若不使用 Actions：先完成本地测试、打包、校验、源码推送和 Tag 推送；然后在 GitHub **Releases → Draft a new release** 选择 `v0.8.0`，粘贴 CHANGELOG 和安装说明，上传本节列出的附件及 `artifacts/release-check.json`。草稿审阅完成后发布。
+若不使用 Actions：先完成本地测试、打包、校验并将源码提交到远端；然后在 GitHub **Releases → Draft a new release** 选择或新建 `v0.8.1`，目标为包含这些修改的提交，粘贴 CHANGELOG 和安装说明，上传本节列出的附件及 `artifacts/release-check.json`。草稿审阅完成后发布。如果选择此网页手动路径，不要另外推送同一 Tag 来触发自动建草稿，也不要再手动运行自动 Release 工作流；否则已存在的 Release 会与自动 gh release create 冲突。
 
 发布说明可用以下命令生成预览内容：
 
@@ -212,3 +218,7 @@ node scripts/release-notes.mjs | Set-Content -Encoding utf8 .\artifacts\release-
 - README、Release 说明、源码 ZIP/TAR、扩展 ZIP 应带一致的新许可。不要上传以前按 MIT 打包的本地旧产物；修改许可后必须重新打包和校验。已有效授予的旧版本许可不能仅靠换文件追溯撤回。
 
 后续每次发布沿用“修改版本与文档 → 自动测试/对应 Creator 回归 → 打包干净安装验证 → 提交并检查 CI → 推 Tag → 审阅草稿 → 发布”的顺序。
+
+## 8. 已有仓库的首次上传检查
+
+本项目已上传至 https://github.com/David-xiao-dev/CocosCreatorMCP 。截至 2026-10-29 的首次提交，远端缺少 package-lock.json、.gitignore、.gitattributes、CHANGELOG.md、CONTRIBUTING.md 和 SECURITY.md，CI 因缺少 lockfile 失败。后续版本发布前须补齐这些根文件，并上传本次 0.8.1 的源码/文档改动。只上传 extension.zip 附件不会更新仓库源码或修复 Actions。不要为绕过 npm ci 错误删除 lockfile 检查。

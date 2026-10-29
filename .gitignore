@@ -8,6 +8,7 @@ test-project/.codex/
 artifacts/
 test-project/
 extension/installation.json
+extension/mcp/
 *.log
 .env
 .env.*

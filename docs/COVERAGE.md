@@ -1,6 +1,20 @@
 # 能力与验证记录
 
-## 0.8.0 当前增量（2026-10-29）
+## 0.8.1 当前增量（2026-10-29）
+
+完整扩展发行：extension.zip 内含桥接、MCP 服务、锁定的生产 JS 依赖和第三方许可。用户解压到工程 extensions，启用扩展并复制一次客户端配置即可，无需另装 Node/npm 或手动启动服务。使用本机 Creator 自带 Electron 的 Node 模式，不复制 Creator/Node 二进制。源码开发仍需 Node.js 22+。
+
+| 检查 | 证据与边界 |
+| --- | --- |
+| 路径和配置 | 自动测试覆盖中文/空格目录迁移、运行时环境变量、缺失文件拒绝复制、源码路径失效；53 项自动测试通过 |
+| 完整归档 | 三个归档哈希/清单/逐字节匹配；依赖与源码全新 npm ci 的结果比较；没有本机安装描述或连接数据 |
+| 离线连接 | 解压到独立中文/空格路径，在空 PATH 下握手、四工具、schema、只读拒绝、批量结果引用和图像返回；真实 Windows Creator 3.8.8 可执行文件通过 |
+| 实际扩展加载 | 在独立 test-project 中禁用旧扩展、替换完整包再启用；无 installation.json，原生面板 dashboard 返回正确配置；该配置通过实际 Creator 运行环境连接和读取真实场景；层级与场景 dirty 状态保持原样 |
+| 使用边界 | 仍需在 AI 客户端粘贴一次连接配置；不自动修改全局配置。移动工程/更换 Creator 路径后须重复制配置。其他系统的编辑器集成尚未验证；CI 的 Node 检查不是 Creator 跨平台认证 |
+
+证据：`artifacts/release-check.json`、`artifacts/live-extension-check.json`。复测实际扩展安装可运行 `node scripts/live-extension-check.mjs`，只接受仓库内可丢弃的 test-project；会替换该工程扩展并保留旧版备份，不自动保存场景。发行工作不扩大以下 0.8 的功能、视觉或失败恢复验收范围。
+
+## 0.8.0 历史增量（2026-10-29）
 
 Windows + Creator 3.8.8，新增 `ui.layout` 紧凑操作，共 90 项操作，默认四个 MCP 工具。详见 [UI 自适应布局](UI-LAYOUT.md)。
 

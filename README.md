@@ -1,6 +1,6 @@
 # CocosCreatorMCP
 
-面向 **Cocos Creator 3.8.8** 的源码可见编辑器控制工具，当前为 **0.8.0 开发预览版**。支持 Codex 与标准 MCP STDIO 客户端，带 Creator 原生控制面板、批量操作、脚本/引用/按钮、预制体、资源依赖与替换、原生动画、Spine、场景视图/参考图、Widget/Layout/ScrollView 自适应、字体/UI 诊断和 Web 构建产物运行验证。
+面向 **Cocos Creator 3.8.8** 的源码可见编辑器控制工具，当前为 **0.8.1 开发预览版**。支持 Codex 与标准 MCP STDIO 客户端，带 Creator 原生控制面板、批量操作、脚本/引用/按钮、预制体、资源依赖与替换、原生动画、Spine、场景视图/参考图、Widget/Layout/ScrollView 自适应、字体/UI 诊断和 Web 构建产物运行验证。
 
 **许可：个人学习和非商业使用免费；商业游戏、公司/组织或客户项目、收费服务，以及原版/修改版再分发，均须事先取得书面授权。** 商业授权联系：[17268680050@163.com](mailto:17268680050@163.com)。详见 [LICENSE](LICENSE) 与 [许可说明](docs/LICENSING.md)。本项目不使用 MIT/Apache/GPL，也不属于 OSI 定义的开源许可。
 
@@ -12,21 +12,24 @@
 
 ## 开始使用
 
-需要 Node.js 22+ 和 Creator 3.8.8。下载或克隆本仓库，在仓库目录运行：
+**普通用户推荐完整扩展 ZIP，无需安装 Node.js、npm 或额外服务器。**
 
-```sh
-npm ci
-node scripts/cli.mjs install --project "/absolute/path/to/YourGame"
+1. 从 [Releases](https://github.com/David-xiao-dev/CocosCreatorMCP/releases) 下载 **`cocos-creator-mcp-0.8.1-extension.zip`**，不是 GitHub 自动附带的 Source code ZIP。
+2. 解压，将整个 `cocos-codex-bridge/` 文件夹放进游戏工程的 **`extensions/`**。
+3. 在 Creator 3.8.8 中打开工程，启用扩展，打开 **扩展 → Cocos MCP → 控制台**。
+4. 在「连接与设置」复制配置，加入客户端 MCP 设置，重启该连接。
+5. 让 AI 检查连接、读取场景；或在面板「UI 模板」中先预检查再生成。
+
+```text
+YourGame/extensions/cocos-codex-bridge/
+  package.json
+  main.js
+  mcp/                 # 已包含 MCP 服务与依赖，请保留整个文件夹
 ```
 
-1. 在 Creator 中打开该项目，在扩展管理器中确认 `cocos-codex-bridge` 已启用。
-2. 打开 **扩展 → Cocos MCP → 控制台**。
-3. 在「连接与设置」复制配置，加入客户端的 MCP 设置，重启该连接。
-4. 让 AI 检查连接、读取场景；或在「UI 模板」中先预检查再生成。
+完整包使用本机 Creator 自带运行环境，客户端自动启动通信进程，无需手动开终端。首次仍需在 AI 客户端添加一次连接配置；复制按钮不会自动修改客户端设置。移动工程或更换 Creator 安装路径后，重新复制配置。完整扩展已在 Windows + Creator 3.8.8 实测，其他系统的编辑器集成仍待验证。
 
-安装器会准备项目级 `.codex/config.toml`。已有配置会保留，另写示例文件供合并；项目级配置需被客户端信任。控制台复制配置不会自动改写客户端全局设置。
-
-当前仓库尚未发布到 npm，因此不要把包名当成已经可用的 `npx` 安装入口。已安装的本机 `cocos_creator` 服务继续使用同一服务脚本，重启连接后会采用新的精简工具模式。
+源码开发者才需要 Node.js 22+，克隆源码后运行 `npm ci` 和 `node scripts/cli.mjs install --project "/absolute/path/to/YourGame"`。源码安装器会准备工程级 `.codex/config.toml`，保留已有配置并另写示例供合并。当前没有 npm 发布入口；不要使用猜测的 npx 包名。安装详情见 [安装指南](docs/INSTALLATION.md)。
 
 首条指令示例：
 
@@ -121,7 +124,7 @@ npm run release:local
 npm run release:verify
 ```
 
-修改操作 schema 后运行 `npm run generate`。新增全新安装/重复安装配置保护回归，当前共 51 项自动测试；包括多文件写失败、并发修改保护、备份篡改、缓存失效竞态、构建服务边界、字体/UI 规则和布局语义。实际资源、动画、Spine、文字/UI、布局与两类 Web 产物验证见 [覆盖记录](docs/COVERAGE.md)。示例生成不会覆盖已有场景；首次使用先保存当前场景。跨平台 CI 配置已经提供，其他系统的编辑器集成尚未验证。
+修改操作 schema 后运行 `npm run generate`。当前共 53 项自动测试；包括完整包路径迁移/连接配置、源码安装保护、多文件写失败、并发修改保护、备份篡改、缓存失效竞态、构建服务边界、字体/UI 规则和布局语义。发行验证还会解压完整扩展，在空 PATH、独立带空格/中文路径下检查实际 STDIO 握手、四工具、schema、批量和图像。实际资源、动画、Spine、文字/UI、布局与两类 Web 产物验证见 [覆盖记录](docs/COVERAGE.md)。示例生成不会覆盖已有场景；首次使用先保存当前场景。跨平台 CI 配置已经提供，其他系统的编辑器集成尚未验证。
 
 真实编辑器检查只针对独立、可丢弃的 `test-project`，会修改和保存场景：
 

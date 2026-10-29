@@ -17,9 +17,8 @@ ${entry}
 
 ## Downloads
 
-- **source.zip**: recommended for Windows users; extract, run npm ci, then the project installation command.
-- **source.tar.gz**: the same complete source distribution for tar users.
-- **extension.zip**: Creator bridge only, for manual project installation. The separate Node MCP service and its dependencies are still required. This is not a Creator Store installer.
+- **extension.zip (recommended)**: complete extension with the MCP service and pinned JS dependencies. Extract cocos-codex-bridge into your game's extensions directory, enable in Creator 3.8.8 and copy the client configuration from the control panel. No separate Node/npm/server installation or manual server startup. Uses the installed Creator runtime; first-time AI client configuration is still required. This is not a Creator Store installer.
+- **source.zip / source.tar.gz**: source distributions for developers; require Node.js 22+, npm ci and the source project installation command. GitHub's automatic Source code archives are also developer source snapshots, not the complete extension ZIP.
 - **SHA256SUMS.txt** and **manifest.json**: archive checksums and file lists.
 - **release-check.json**: packaging verification from this build.
 

@@ -1,239 +1,158 @@
-# 安装与使用（Windows + Creator 3.8.8）
+# 安装与使用（Creator 3.8.8）
 
-本教程面向首次使用的用户。维护者发布源码和 Release 的流程见 [GitHub 发布指南](GITHUB-RELEASE.md)。当前是 **0.8.0 开发预览**：可以先公开源码并收集反馈，已验证范围和待完成项见 [COVERAGE](COVERAGE.md) 与 [ROADMAP](ROADMAP.md)。
+当前是 **0.8.1 开发预览**。普通用户推荐完整扩展 ZIP：不需要单独安装 Node.js、npm、MCP SDK 或服务器。源码开发者的安装方式放在第 5 节。已验证范围见 [COVERAGE](COVERAGE.md)，维护者发布流程见 [GitHub 发布指南](GITHUB-RELEASE.md)。
 
-**使用范围：个人学习和非商业使用免费；商业游戏、公司/组织或客户项目、收费服务，以及再分发须事先书面授权。** 许可正文见 [LICENSE](../LICENSE)，申请方式与边界见 [许可说明](LICENSING.md)，联系 [17268680050@163.com](mailto:17268680050@163.com)。没有激活码不等于允许未经授权的商业使用。
+**使用范围：个人学习和非商业使用免费；商业游戏、公司/组织或客户项目、收费服务以及再分发须事先书面授权。** 见 [LICENSE](../LICENSE) 与 [许可说明](LICENSING.md)，联系 [17268680050@163.com](mailto:17268680050@163.com)。没有激活码不等于允许未经授权的商业使用。
 
-## 1. 需要安装什么
+## 1. 下载哪个包
 
-| 环境 | 要求 | 用途 |
+先准备 **Cocos Creator 3.8.8**、一个 Creator 项目，以及能够正常使用模型的 AI 客户端。Cocos Dashboard 不包含编辑器，须另外安装 Creator。完整扩展目前真实验证的是 Windows + Creator 3.8.8；其他系统的 Creator 集成待验证。
+
+打开 [GitHub Releases](https://github.com/David-xiao-dev/CocosCreatorMCP/releases)，选择 **`cocos-creator-mcp-0.8.1-extension.zip`**。
+
+| 文件 | 面向谁 | 要求 |
 | --- | --- | --- |
-| Windows | 已验证 Windows 本机 Creator 联调；建议 Windows 10/11 64 位 | 运行编辑器与客户端 |
-| Cocos Dashboard + Creator | 优先使用 **Creator 3.8.8**；Dashboard 本身不包含编辑器 | 打开游戏项目、运行桥接扩展 |
-| Node.js | **22.x** 为当前测试基线；package 允许 >=22 | 运行 MCP 服务与安装脚本 |
-| npm | 使用 Node.js 附带版本 | 安装锁定的 MCP SDK 和 Zod 依赖 |
-| Codex Desktop | 已安装、可以正常使用模型服务 | AI 客户端；也可自行连接其他 STDIO MCP 客户端 |
-| Git | 只有选择 clone 源码或参与开发时需要 | 获取源码、提交与更新 |
+| `*-extension.zip`（0.8.1 起推荐） | 普通使用者 | 完整扩展，含 MCP 服务和锁定的 JS 依赖；无需另装 Node/npm |
+| `*-source.zip` / `*-source.tar.gz` | 源码开发者 | 需要 Node.js 22+、npm ci 和源码安装命令 |
+| GitHub 自动附带的 Source code ZIP/TAR | 源码开发者 | Git 提交快照，不是完整扩展，未附安装好的依赖 |
 
-桥接本身不需要 API Key、厂商账号或激活码。Creator 的账号要求与 Codex 的登录/模型访问由相应产品管理。源码没有附带 Creator、引擎、Node.js 或模型服务。
+**0.8.0 及更早版本的 extension.zip 只有 Creator 桥接**，不能照新版本方式直接使用。不要下载旧包、GitHub 的 Code → Download ZIP，或只复制源码仓库的 extension/ 然后期待完整连接。
 
-下载入口：[Node.js 官方下载](https://nodejs.org/en/download)、[Git for Windows](https://git-scm.com/downloads/win)、[Cocos Dashboard](https://www.cocos.com/creator-download)、[Codex 官方文档](https://developers.openai.com/codex/app)。请通过官方入口选择与你的系统匹配的安装包。
+可选校验：下载附件中的 SHA256SUMS.txt，对照 PowerShell 输出：
 
-### 检查 Node 与 npm
+```powershell
+Get-FileHash '.\cocos-creator-mcp-0.8.1-extension.zip' -Algorithm SHA256
+```
 
-安装 Node.js 22 后，重新打开 PowerShell：
+## 2. 解压并启用扩展
+
+1. 保存并关闭目标项目的 Creator。
+2. 解压下载的 extension.zip。
+3. 将整个 **`cocos-codex-bridge` 文件夹**放入游戏工程的 **`extensions`** 目录，没有 extensions 就新建。
+4. 用 Creator 3.8.8 打开该工程，在扩展管理器中启用 `cocos-codex-bridge`。
+5. 打开 **扩展 → Cocos MCP → 控制台 → 连接与设置**。
+
+目录应是这样，不要双重嵌套，也不要只复制 main.js：
+
+```text
+MyGame/
+  assets/
+  package.json
+  extensions/
+    cocos-codex-bridge/
+      package.json
+      main.js
+      connection.cjs
+      LICENSE
+      mcp/
+        package.json
+        src/server.mjs
+        node_modules/
+```
+
+`mcp/` 及其中的依赖已打包好，请保留。扩展不需要在线安装依赖，不会首次启动时偷偷运行 npm，也不包含 Creator 或 Node 的二进制副本。它使用本机 Creator 自带的运行环境；客户端会自动启动 MCP 通信进程，用户不必另开终端或购买服务器。
+
+面板显示“完整扩展已就绪”后，下一步配置 AI 客户端。**只启用扩展不会自动把它添加到你的 AI 客户端。** 面板的 UI 模板等本地操作可以直接使用，AI 连接还需第 3 步。
+
+## 3. 添加一次 AI 客户端连接
+
+### Codex
+
+点击面板 **复制 Codex TOML**，合并到客户端的 MCP 配置。完整包自动填入本机 Creator 和游戏工程路径，例如：
+
+```toml
+[mcp_servers.cocos_creator]
+command = "C:/ProgramData/cocos/editors/Creator/3.8.8/CocosCreator.exe"
+args = ["D:/Games/MyGame/extensions/cocos-codex-bridge/mcp/src/server.mjs", "--project", "D:/Games/MyGame"]
+startup_timeout_sec = 15
+tool_timeout_sec = 90
+
+[mcp_servers.cocos_creator.env]
+ELECTRON_RUN_AS_NODE = "1"
+```
+
+**以面板生成内容为准，不照抄示例路径，也不要漏掉 env 部分。** macOS/Linux 的可执行路径由对应 Creator 自动给出，但这些系统尚未做完整编辑器验收。Windows 面板生成的双反斜杠字符串与上述正斜杠一样有效。
+
+可以选择工程级 `.codex/config.toml`（客户端须信任该工程），或用户级 Codex 配置。默认用户配置位于用户目录的 `.codex/config.toml`；设置过 CODEX_HOME 时以实际位置为准。只合并本服务的段落，避免重复定义 `[mcp_servers.cocos_creator]`。复制按钮不会修改客户端已有设置。
+
+保存后重新加载 MCP 连接，必要时完全退出并重开客户端。完整包流程不会自动创建 `.codex/config.toml`，请自行粘贴一次。后续不用重复启动服务器。
+
+配置参考：[OpenAI MCP 文档](https://developers.openai.com/codex/mcp)、[配置基础](https://developers.openai.com/codex/config-basic)。客户端界面随版本变化，本文以面板实际生成的配置为入口。
+
+### 其他 STDIO 客户端
+
+点击 **复制通用 STDIO JSON**，按客户端要求合并 mcpServers 配置。完整包的 JSON 同样包含 command、args 和 env，不要漏掉 `ELECTRON_RUN_AS_NODE`。这要求客户端支持 STDIO 子进程的环境变量。
+
+当前提供的是 **STDIO MCP**。Creator 内部 `127.0.0.1` RPC 地址不是可填到客户端的 Streamable HTTP MCP URL；无需固定端口、开放公网防火墙或提供桥接 API Key。模型服务仍由你选择的 AI 客户端提供，其登录与费用按对应产品管理。
+
+## 4. 检查是否连接成功
+
+保持 Creator 打开同一个项目，等待场景和 AssetDB 就绪，让 AI 执行：
+
+> 使用 cocos_status 核对项目和 Creator 版本。先只读取当前场景，不做修改。通过 cocos_catalog 查询所需操作参数，不要猜操作名称。
+
+正常情况下有四个 MCP 工具：`cocos_status`、`cocos_catalog`、`cocos_execute`、`cocos_observe`。目录按需提供 90 项操作 schema。
+
+继续尝试 UI 模板时可以说：
+
+> 查询 ui.build 和 scene.save 参数，读取当前场景。对 menu 模板执行 dryRun，再创建到真实项目 Canvas。读取层级并截图验证结果，最后保存。若失败或超时，检查 requestId 和已完成步骤，不要重复执行整个批次。
+
+完整扩展通过不含系统 Node 路径的 STDIO 测试。Creator 原生功能的支持边界仍见 COVERAGE；完整包不等于已经实现 100% 人工编辑器操作。
+
+## 5. 源码开发者安装（可选）
+
+如果只想使用完整扩展，可以跳过这一节。源码开发需要 Node.js 22.x、npm、可选 Git；无需 TypeScript 编译、Python 或 Visual Studio Build Tools。
+
+官方入口：[Node.js](https://nodejs.org/en/download)、[Git for Windows](https://git-scm.com/downloads/win)、[Cocos Dashboard](https://www.cocos.com/creator-download)。
 
 ```powershell
 node --version
 npm.cmd --version
 where.exe node
-```
-
-预期 Node 显示 `v22.x.x`。Windows 教程使用 `npm.cmd`，可避开 PowerShell 将 `npm` 解析为受执行策略限制的 `npm.ps1`，不需要修改系统执行策略。
-
-若使用 Node 便携版，不必配置系统 PATH，直接使用绝对路径：
-
-```powershell
-& 'D:\Tools\node-v22.12.0-win-x64\node.exe' --version
-& 'D:\Tools\node-v22.12.0-win-x64\node.exe' 'D:\Tools\node-v22.12.0-win-x64\node_modules\npm\bin\npm-cli.js' ci --ignore-scripts
-```
-
-第二条命令需要在下面第 2 步得到的 MCP 源码目录执行。后续命令中的 `node` 也可替换为对应的 `& '绝对路径\node.exe'`。
-
-## 2. 获取完整 MCP 源码
-
-推荐普通用户下载 GitHub **Releases** 中的 `cocos-creator-mcp-0.8.0-source.zip`。解压到固定目录，例如 `D:\Tools\CocosCreatorMCP`。包中顶层有 `package/`，真正的工作目录是包含 `package.json`、`src/`、`extension/`、`scripts/` 的这一层：
-
-```text
-D:\Tools\CocosCreatorMCP\package\
-  package.json
-  package-lock.json
-  src\server.mjs
-  extension\package.json
-  scripts\cli.mjs
-```
-
-进入该目录安装依赖：
-
-```powershell
-Set-Location 'D:\Tools\CocosCreatorMCP\package'
-npm.cmd ci --ignore-scripts
-node scripts/cli.mjs --help
-```
-
-`npm ci` 使用 lockfile，避免每个人安装不同依赖版本。这里不需要 TypeScript 编译、Python、Visual Studio Build Tools 或单独安装 MCP SDK。联网主要用于首次安装依赖；后续本机桥接无需厂商云服务。
-
-也可以使用 Git 克隆。将下面的 `YOUR_ACCOUNT` 和仓库名换成实际地址：
-
-```powershell
-git clone https://github.com/YOUR_ACCOUNT/CocosCreatorMCP.git
+git clone https://github.com/David-xiao-dev/CocosCreatorMCP.git
 Set-Location CocosCreatorMCP
 npm.cmd ci --ignore-scripts
-```
-
-GitHub 自动生成的 Source code ZIP 也是源码快照，但本文的文件名、SHA 校验和安装验证对应维护者上传的 `*-source.zip` / `*-source.tar.gz`。
-
-### 三种下载包的区别
-
-| 文件 | 适合谁 | 是否完整 |
-| --- | --- | --- |
-| `*-source.zip` | Windows 用户、开发者 | 完整源码；仍需 `npm ci` |
-| `*-source.tar.gz` | 使用 tar 的用户、自动化环境 | 与 source ZIP 同一套文件；仍需 `npm ci` |
-| `*-extension.zip` | 已有 MCP 服务、需要手动部署桥接的用户 | **只有 Creator 侧扩展**，不是完整 MCP，不包含 Node 依赖 |
-
-不要仅安装 extension ZIP 就认为 Codex 可以连接。MCP 服务运行于 Node，Creator 扩展只是它连接编辑器的桥梁。
-
-### 校验下载文件
-
-把 `SHA256SUMS.txt` 与下载包放在同一目录：
-
-```powershell
-Get-FileHash '.\cocos-creator-mcp-0.8.0-source.zip' -Algorithm SHA256
-Get-Content '.\SHA256SUMS.txt'
-```
-
-对照同名文件的哈希值，大小写不影响比较。版本升级后文件名中的版本号也要同步替换。
-
-## 3. 准备 Creator 项目
-
-在 Dashboard 中安装 **3.8.8 编辑器**，并用该版本创建或打开一个项目。首次建议使用独立测试项目。等待资源导入完成，打开一个已保存的场景，再继续安装。
-
-项目路径应指向包含 `assets/`、`settings/`、`package.json` 的工程根目录，例如：
-
-```text
-D:\Games\MyGame\
-  assets\
-  settings\
-  package.json
-```
-
-不要填 `assets` 子目录、Creator 安装目录或 Dashboard 目录。安装器会检查项目 `package.json` 的 `creator.version` 是否为 3.8.x；完整联调目前只承诺文档中实际测试的 3.8.8。
-
-## 4. 安装桥接扩展
-
-先保存并关闭目标项目的 Creator 窗口，在 MCP 源码目录执行：
-
-```powershell
 node scripts/cli.mjs install --project 'D:\Games\MyGame'
 ```
 
-安装器会：
+Windows 使用 npm.cmd 可避开 npm.ps1 执行策略问题。也可下载 source ZIP，进入解压后的 package/ 目录安装。package.json 仍有 private:true，不能猜测 npx 包名作为安装入口。
 
-1. 将 `extension/` 复制到工程的 `extensions/cocos-codex-bridge/`，并附带 LICENSE 和 docs/LICENSING.md。
-2. 写入仅供本机使用的 `installation.json`，记录当前 Node 与 MCP 服务的绝对路径。
-3. 创建工程级 `.codex/config.toml`。若已有不同配置，会保留原文件，另写 `.codex/cocos-mcp.example.toml` 供手动合并。
+安装器复制扩展和许可文件，写入本机 installation.json，并准备工程级 `.codex/config.toml`；已有不同配置会保留，另写 cocos-mcp.example.toml 供合并。源码方式的面板配置使用独立 Node 路径和源码 src/server.mjs，不需要 Electron 环境变量。不要把源码安装与完整包覆盖混用；安装器发现已有完整扩展时会拒绝。
 
-重新用 Creator 3.8.8 打开项目，在扩展管理器中确认 `cocos-codex-bridge` 启用。菜单入口是 **扩展 → Cocos MCP → 控制台**。中文/英文菜单名称会随编辑器语言略有变化。
-
-控制台应显示实际工程路径、Creator 版本和「桥接已就绪」。如果菜单没有出现，检查目录是否是下面这一层，避免双重嵌套：
-
-```text
-MyGame/extensions/cocos-codex-bridge/package.json
-```
-
-### 手动安装 extension ZIP（可选）
-
-1. 完成第 2 步的完整源码和 `npm ci` 安装。
-2. 关闭目标项目的 Creator。
-3. 将 extension ZIP 中的整个 `cocos-codex-bridge/` 放到目标项目 `extensions/`。
-4. 仍推荐运行上述 `install --project ...`，补齐机器路径与客户端配置。
-
-这是普通文件夹扩展包，不是 Cocos Store 安装器，不承诺扩展管理器能够直接把这个 ZIP 作为商店插件导入。
-
-## 5. 在 Codex 中配置 MCP
-
-优先使用控制台 **连接与设置 → 复制 Codex TOML**。也可读取安装器生成的 `.codex/config.toml`。例如，使用固定 Node 路径的配置如下；请替换成你自己的路径：
-
-```toml
-[mcp_servers.cocos_creator]
-command = "C:/Program Files/nodejs/node.exe"
-args = ["D:/Tools/CocosCreatorMCP/package/src/server.mjs", "--project", "D:/Games/MyGame"]
-startup_timeout_sec = 15
-tool_timeout_sec = 90
-```
-
-Windows TOML 示例使用 `/`，避免反斜杠转义错误。安装器生成的双反斜杠字符串同样有效。`--project` 固定决定所连接的工程；打开其他 Creator 工程不会自动切换它。
-
-选择一种配置范围即可：
-
-- **工程级**：在 Codex 中打开 `D:\Games\MyGame`，使用工程 `.codex/config.toml`。客户端需信任这个工程才能加载其本地配置。
-- **用户级**：通过 Codex 设置中的 MCP 入口打开配置，将这段合并到用户配置。默认文件位于 Windows 用户目录的 `.codex/config.toml`；如果设置过 `CODEX_HOME`，以客户端实际配置位置为准。
-
-不要在同一生效配置中重复定义 `[mcp_servers.cocos_creator]`。已有同名服务应修改原条目。重载 MCP 连接，或完全退出并重新打开 Codex，然后在目标工程中开启对话。
-
-配置参考：[OpenAI MCP 文档](https://developers.openai.com/codex/mcp)、[配置基础](https://developers.openai.com/codex/config-basic)。客户端设置界面可能随版本变化，TOML 和本项目安装器输出为本文的主要操作入口。本次编写时官方文档站的网络请求受限；未将客户端界面名称视为已逐版验证。
-
-### 其他 STDIO MCP 客户端
-
-控制台可复制通用 JSON，例如：
-
-```json
-{
-  "mcpServers": {
-    "cocos_creator": {
-      "command": "C:/Program Files/nodejs/node.exe",
-      "args": ["D:/Tools/CocosCreatorMCP/package/src/server.mjs", "--project", "D:/Games/MyGame"]
-    }
-  }
-}
-```
-
-不同客户端的配置外层名称可能不同，请按其文档合并。本项目当前提供 **STDIO MCP**；Creator 的 `127.0.0.1` RPC 地址是内部桥接地址，不能当作 Streamable HTTP MCP URL 填进客户端。无需开放防火墙公网端口，也无需固定桥接端口。
-
-## 6. 检查连接与首次使用
-
-保持 Creator 打开工程，等待场景和 AssetDB 就绪，在源码目录执行：
+检查源码安装：
 
 ```powershell
 node scripts/cli.mjs doctor --project 'D:\Games\MyGame'
 ```
 
-成功输出应包含正确 `project`、`editorVersion: "3.8.8"`、`Scene ready: true`、`AssetDB ready: true`。Doctor 的 ready 检查使用高级消息接口；如果你在控制台关闭了高级接口，优先让 AI 调用 `cocos_status` 检查连接，Doctor 的该部分会被拒绝。
+Doctor 的部分检查需要面板启用高级消息接口。关闭高级接口时，可让 AI 用 cocos_status 核对连接。Node 便携版可用绝对路径调用 node.exe 和 npm-cli.js，无须改系统 PATH。
 
-给 Codex 的第一条指令：
+## 6. 更新、移动、回退与卸载
 
-> 使用 cocos_status 确认项目和 Creator 版本。查询 cocos_catalog 的 scene.tree、ui.build 和 scene.save 参数，先读取当前场景。对 menu 模板执行 dryRun，再创建到真实项目 Canvas。读取层级并截图验证结果，最后保存。若失败或超时，检查 requestId 和已完成步骤，不要重复执行整个批次。
+完整包更新：保存并关闭 Creator、断开 MCP 连接，备份并移走旧 `extensions/cocos-codex-bridge/`，解压新版完整文件夹到同一位置。重新打开项目，从面板复制新配置并重连。不要只覆盖几个 JS，也不要混用源码包或旧版依赖。
 
-默认应该看到四个 MCP 工具：`cocos_status`、`cocos_catalog`、`cocos_execute`、`cocos_observe`。操作 schema 按需获取，不会一次加载全部 90 项详细参数。首次可先只读取场景，不必立刻修改正式游戏工程。
+移动游戏工程、改扩展文件夹位置或更换 Creator 安装位置后，旧配置的绝对路径会失效；从新位置的面板重新复制配置即可，不用运行 npm。多个项目各自有扩展与独立连接；`--project` 决定目标，不随当前前台工程自动切换。多个配置不要使用重复服务名。
 
-## 7. 更新、回退与卸载
+回退时同样替换为完整旧版并恢复对应配置。插件回退不会自动回退已经修改的场景或资源，需要另用 Git 或项目备份恢复。0.8.0 旧包仍需其原有源码安装方式。
 
-### 更新
+卸载：关闭 Creator 和 MCP 连接，移除整个 cocos-codex-bridge 文件夹，只删除客户端中本服务配置段（包括 env 子表），不要删除其他设置或整个 .codex 目录。源码方式还可按需移除独立源码目录。
 
-1. 保存并关闭 Creator 工程，断开该项目 MCP 客户端连接。
-2. 备份旧版 MCP 源码目录和工程 `extensions/cocos-codex-bridge/`。使用项目版本控制保留工程内容。
-3. 新版本解压到独立固定目录，运行 `npm ci --ignore-scripts`。
-4. 用新目录的 `install --project ...` 重新安装扩展。
-5. 合并新的 TOML 示例或控制台配置。已有配置不会被自动覆盖，尤其要检查新的 `src/server.mjs` 路径。
-6. 打开 Creator、重启 MCP 连接，运行 Doctor 并读取状态。
+工程 `local/cocos-mcp/` 可能含设置与恢复备份，`temp/cocos-mcp/` 含临时连接信息；确认不再需要恢复后自行清理。卸载不自动删除游戏节点或改写场景。没有原子升级器或一键回滚向导。
 
-安装器会复制当前扩展文件，没有完整升级迁移器或原子回退机制。跨版本若需要清除旧文件，关闭 Creator 后先备份并手动移走旧扩展目录，再安装；不要将此过程称为无风险一键升级。
-
-### 回退
-
-关闭 Creator 和 MCP 连接，从旧版本完整源码目录重新安装，恢复旧版配置路径，再打开和验证工程。场景/资源内容如果已被新版本修改，需另用 Git 或资源备份恢复；回退插件代码不等于自动回退游戏内容。
-
-### 卸载
-
-关闭 Creator 和 MCP 连接后，移除工程 `extensions/cocos-codex-bridge/`，在客户端配置中只删除本服务的配置段，再按需移除 MCP 源码目录。不要删除包含其他设置的整个 `.codex` 目录。
-
-工程 `local/cocos-mcp/` 可能含设置和恢复备份，`temp/cocos-mcp/` 含临时连接记录。确认不再需要恢复后再自行清理。卸载不会自动改写场景或删除游戏节点。
-
-## 8. 常见问题
+## 7. 常见问题
 
 | 现象 | 处理 |
 | --- | --- |
-| `node` 找不到 | 重开 PowerShell；检查 PATH 或用 Node 绝对路径 |
-| `npm.ps1` 不能运行 | 使用 `npm.cmd`，无需修改执行策略 |
-| `npm ci` 网络失败 | 检查 npm 网络/代理与官方 registry 连通性；保留完整错误，不随意删除 lockfile |
-| `ERR_MODULE_NOT_FOUND` | 在包含 package.json 的源码根目录运行 `npm.cmd ci --ignore-scripts` |
-| bridge offline | Creator 必须打开**同一个工程**；确认扩展启用和菜单可见 |
-| 没有 MCP 工具 | 检查配置是否生效、工程是否被信任、路径是否正确、是否重复定义服务；重启连接 |
-| 工具显示但写入拒绝 | 控制台是否暂停编辑；高级脚本/消息接口是否关闭 |
-| 面板更新后空白/仍旧版 | 关闭并重开 Creator；确认扩展复制位置，避免残留旧面板实例 |
-| UI 创建后看不见 | 检查项目 Canvas、活动 UI 相机、layer、尺寸和位置；定位生成根节点，再保存重开验证 |
-| 超时或连接中断 | 按返回 requestId 查询 `operation.status`；已执行内容可能存在，禁止盲目重放写入 |
-| MCP 目录移动后失效 | 在新位置重新安装、合并新配置并重启连接；配置是绝对路径 |
-| Spine、构建或插件能力不符 | 查看 COVERAGE 和 ROADMAP 的实际版本/平台范围；通用接口存在不等于工作流已验收 |
+| 面板说完整扩展文件缺失 | 重新下载 extension.zip，保留整个 cocos-codex-bridge/mcp/，不要从源仓库只复制 extension/ |
+| 面板仍要求源码安装 | 确认下载的是 0.8.1+ extension.zip，避免旧包、Source code ZIP 和双重嵌套 |
+| 启动连接时又弹出 Creator 窗口 | 检查客户端 env 是否包含 ELECTRON_RUN_AS_NODE="1"；重新复制面板配置 |
+| MCP 启动后 ERR_MODULE_NOT_FOUND | 完整包请重新解压，不用 npm；源码用户在 package.json 所在目录运行 npm.cmd ci |
+| bridge offline | Creator 必须打开配置指定的同一个工程，扩展需启用 |
+| 没有 MCP 工具 | 检查配置是否生效、工程信任、绝对路径、env、服务重名；重启连接 |
+| 工具可见但写入拒绝 | 检查面板暂停编辑和高级脚本/消息开关 |
+| 面板更新后仍旧版 | 关闭并重开 Creator，确认完整替换正确文件夹 |
+| UI 创建后看不见 | 检查项目 Canvas、活动 UI 相机、layer、尺寸和位置；定位结果并验证 |
+| 超时或中断 | 按 requestId 查 operation.status；禁止盲目重放写操作 |
+| 源码 npm ci 网络失败 | 检查 npm 代理/网络，保留 lockfile；完整扩展用户不需要此步骤 |
 
-需要反馈时，先用独立工程复现，记录 MCP/Creator/Node/客户端版本、操作名、脱敏参数、requestId 和最小复现步骤。不要公开连接 token、整个私有游戏工程或包含账号的完整日志。
+反馈时记录 MCP/Creator/客户端/系统版本、操作名、脱敏参数、requestId 和最小复现步骤。不要公开连接 token、完整私有工程或账号日志。

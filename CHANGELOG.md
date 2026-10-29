@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.8.1 — 2026-10-29 (development preview)
+
+- Make extension.zip a complete project extension: include the MCP service, pinned production JavaScript dependencies and their license files. Extract into extensions, enable in Creator 3.8.8 and copy client configuration; no user npm, separate Node installation or manual server startup.
+- Resolve installation paths after extraction and use the installed Creator Electron runtime in Node mode. Keep source-install support, reject mixed source/complete installations and disable copying incomplete configuration. Client setup remains a one-time step; moving the project or upgrading Creator to another path requires copying configuration again.
+- Verify the extracted package in an unrelated path with spaces/Unicode and an empty PATH: real STDIO handshake, four tools, schemas, status, readonly rejection, batch result references and image content. Exercise the same package with the actual Windows Creator 3.8.8 executable; CI uses Node and does not certify other Creator operating systems.
+- This improves distribution only. Editor workflow coverage and known layout/visual/recovery limitations remain as documented for 0.8.0. The personal non-commercial license is unchanged.
+
 ## 0.8.0 — 2026-10-29 (development preview)
 
 - Replace this distribution's MIT terms with CocosCreatorMCP Personal Non-Commercial License 1.0: free personal non-commercial use; prior written authorization for commercial/organizational use and redistribution. Add licensing/contact guidance, contribution-agreement requirements and GitHub configuration for CocosCreatorMCP. Third-party licenses and valid prior grants are unaffected; historical entries below do not license this distribution under MIT.

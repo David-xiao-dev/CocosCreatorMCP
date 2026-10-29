@@ -9,6 +9,10 @@ if (at >= 0 && (!args[at + 1] || args[at + 1].startsWith('--'))) throw new Error
 const project = path.resolve(at >= 0 ? args[at + 1] : path.join(root, 'test-project'));
 const source = path.join(root, 'extension');
 const destination = path.join(project, 'extensions', 'cocos-codex-bridge');
+try {
+  await fs.access(path.join(destination, 'mcp'));
+  throw new Error('A complete Release extension is already installed. Update it by replacing the whole cocos-codex-bridge folder with the new extension ZIP; do not mix source-install and complete-extension files.');
+} catch (error) { if (error.code !== 'ENOENT') throw error; }
 const pkg = JSON.parse(await fs.readFile(path.join(project, 'package.json'), 'utf8'));
 if (!pkg.creator?.version?.startsWith('3.8.')) throw new Error('Expected a Creator 3.8.x project package.json.');
 await fs.mkdir(destination, { recursive: true });
